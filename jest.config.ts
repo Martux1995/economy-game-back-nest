@@ -5,6 +5,11 @@ export default {
   transform: {
     '^.+.(js|ts)$': ['ts-jest', { tsconfig: 'tsconfig.json' }],
   },
+  globals: {
+    'ts-jest': {
+      isolatedModules: true,
+    },
+  },
   transformIgnorePatterns: ['node_modules'],
   testPathIgnorePatterns: ['node_modules'],
   coveragePathIgnorePatterns: ['node_modules'],
@@ -20,6 +25,5 @@ export default {
     '!**/*.dto.ts',
     '!**/*.entity.ts',
     '!**/*.model.ts',
-    '!*/database/*.ts',
   ],
 } as Config.InitialOptions;
