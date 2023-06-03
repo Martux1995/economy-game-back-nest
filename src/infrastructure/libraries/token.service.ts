@@ -12,7 +12,7 @@ export class TokenServiceImp extends TokenService {
 
   sign(payload: TokenData): string {
     return JWT.sign(payload, this.envConfigService.getJwtSecret(), {
-      expiresIn: 60 * 10, // 10 Minutes
+      expiresIn: TokenService.TOKEN_EXPIRE,
     });
   }
 
