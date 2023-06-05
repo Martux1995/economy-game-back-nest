@@ -3,6 +3,7 @@ import { LoginUseCase } from './usecases/login.usecase';
 import { InfrastructureModule } from '../../infrastructure/infrastructure.module';
 
 @Module({
+  imports: [InfrastructureModule],
   providers: [LoginUseCase],
   exports: [LoginUseCase],
 })
