@@ -2,7 +2,7 @@ import { Person } from './person.entity';
 import { Session } from './session.entity';
 
 export interface User {
-  userId: string;
+  userId: number;
   passHash: string;
   isAdmin: boolean;
   createdDate: Date;
