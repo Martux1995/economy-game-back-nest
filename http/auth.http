@@ -1,0 +1,10 @@
+@domain = localhost:3000
+
+POST http://{{domain}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "asdasd@asdas.com",
+  "personalNumberId": "11111111-1",
+  "password": "ajsodasj"
+}
