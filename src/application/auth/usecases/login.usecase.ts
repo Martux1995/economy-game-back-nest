@@ -14,10 +14,10 @@ export class LoginUseCase {
     private readonly tokenService: TokenService,
   ) {}
 
-  login(params: LoginParams) {
+  async login(params: LoginParams) {
     const { email, personalNumber, password } = params;
 
-    const userData: User = this._getUserData(email, personalNumber);
+    const userData: User = await this._getUserData(email, personalNumber);
 
     if (!userData || !comparePassword(password, userData.passHash)) {
       throw new LoginNotFoundException('Los datos ingresados son incorrectos');
@@ -25,12 +25,15 @@ export class LoginUseCase {
 
     const key = generateRandomUUID();
     const token = this._generateToken(userData.userId, key);
-    this.authRepository.registerToken(userData.userId, token, key);
+    await this.authRepository.registerToken(userData.userId, key);
 
     return token;
   }
 
-  private _getUserData(email: string, personalNumber: string): User {
+  private async _getUserData(
+    email: string,
+    personalNumber: string,
+  ): Promise<User> {
     if (email) {
       return this.authRepository.getUserDataByEmail(email);
     } else {
