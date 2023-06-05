@@ -5,7 +5,5 @@ import { ApplicationModule } from './application/application.module';
 
 @Module({
   imports: [InfrastructureModule, ApplicationModule, AdaptersModule],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}
