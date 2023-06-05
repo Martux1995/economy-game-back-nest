@@ -1,22 +1,11 @@
 import { Module, Provider } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
-import { EncryptServiceImp } from './encrypt.service';
 import { TokenServiceImp } from './token.service';
 import { ConfigServiceImp } from './config.service';
-import { RUNServiceImp } from './run.service';
-import {
-  EncryptService,
-  ConfigService,
-  TokenService,
-  RUNService,
-} from '../../domain/services';
+import { ConfigService, TokenService } from '../../domain/services';
 
 const EXTERNAL_LIBRARIES: Provider[] = [
-  {
-    provide: EncryptService,
-    useClass: EncryptServiceImp,
-  },
   {
     provide: TokenService,
     useClass: TokenServiceImp,
@@ -24,10 +13,6 @@ const EXTERNAL_LIBRARIES: Provider[] = [
   {
     provide: ConfigService,
     useClass: ConfigServiceImp,
-  },
-  {
-    provide: RUNService,
-    useClass: RUNServiceImp,
   },
 ];
 
