@@ -6,6 +6,7 @@ import { LoginNotFoundException } from '../exceptions';
 import { comparePassword } from '../../common/helpers/password';
 import { TokenService } from '../../../domain/services';
 import { generateRandomUUID } from '../../common/helpers/uuid';
+import { formatRUN } from '../../common/helpers/run';
 
 @Injectable()
 export class LoginUseCase {
@@ -17,7 +18,10 @@ export class LoginUseCase {
   async login(params: LoginParams) {
     const { email, personalNumber, password } = params;
 
-    const userData: User = await this._getUserData(email, personalNumber);
+    const userData: User = await this._getUserData(
+      email,
+      formatRUN(personalNumber),
+    );
 
     if (!userData || !comparePassword(password, userData.passHash)) {
       throw new LoginNotFoundException('Los datos ingresados son incorrectos');
