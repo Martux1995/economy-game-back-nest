@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import { hashSync, compareSync } from 'bcrypt';
 
 const ROUNDS = 10;
 
@@ -8,7 +8,7 @@ const ROUNDS = 10;
  * @returns Hash generated for the password.
  */
 export const hashPassword = (password: string): string => {
-  return bcrypt.hashSync(password, ROUNDS);
+  return hashSync(password, ROUNDS);
 };
 
 /**
@@ -18,5 +18,5 @@ export const hashPassword = (password: string): string => {
  * @returns true if the password or text match with the hash. Otherwise, false.
  */
 export const comparePassword = (password: string, hash: string): boolean => {
-  return bcrypt.compareSync(password, hash);
+  return compareSync(password, hash);
 };

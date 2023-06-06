@@ -1,4 +1,4 @@
-import JWT from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 import { Injectable } from '@nestjs/common';
 
 import { TokenData } from '../../domain/types/token-data';
@@ -11,12 +11,12 @@ export class TokenServiceImp extends TokenService {
   }
 
   sign(payload: TokenData): string {
-    return JWT.sign(payload, this.envConfigService.getJwtSecret(), {
+    return sign(payload, this.envConfigService.getJwtSecret(), {
       expiresIn: TokenService.TOKEN_EXPIRE,
     });
   }
 
   verify(token: string): TokenData {
-    return JWT.verify(token, this.envConfigService.getJwtSecret()) as TokenData;
+    return verify(token, this.envConfigService.getJwtSecret()) as TokenData;
   }
 }
