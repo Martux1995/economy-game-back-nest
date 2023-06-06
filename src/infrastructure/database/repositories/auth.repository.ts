@@ -10,6 +10,17 @@ export class AuthRepositoryImp extends AuthRepository {
     super();
   }
 
+  getUserDataById(userId: number): Promise<UserEntity> {
+    return this.dataSource.getRepository(UserEntity).findOne({
+      relations: {
+        person: true,
+      },
+      where: {
+        userId,
+      },
+    });
+  }
+
   getUserDataByEmail(email: string): Promise<UserEntity> {
     return this.dataSource.getRepository(UserEntity).findOne({
       relations: {
@@ -34,8 +45,35 @@ export class AuthRepositoryImp extends AuthRepository {
       },
     });
   }
-  async registerToken(userId: number, key: string): Promise<void> {
+
+  getSessionData(userId: number, key: string): Promise<SessionEntity> {
+    return this.dataSource.getRepository(SessionEntity).findOne({
+      relations: {
+        user: {
+          person: true,
+        },
+      },
+      where: {
+        key,
+        user: {
+          userId,
+        },
+      },
+    });
+  }
+
+  async registerSessionData(userId: number, key: string): Promise<void> {
     await this.dataSource.getRepository(SessionEntity).insert({
+      key,
+      user: {
+        userId,
+      },
+      expiredDate: new Date(),
+    });
+  }
+
+  async removeSessionData(userId: number, key: string): Promise<void> {
+    await this.dataSource.getRepository(SessionEntity).delete({
       key,
       user: {
         userId,
