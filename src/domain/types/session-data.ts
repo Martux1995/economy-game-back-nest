@@ -1,4 +1,4 @@
-export type SessionData = {
+export type UserSessionData = {
   userId: number;
   sessionKey: string;
   firstName: string;

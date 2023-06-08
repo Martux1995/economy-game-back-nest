@@ -3,7 +3,7 @@ import {
   ExecutionContext,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { SessionData } from '../../../domain/types';
+import { UserSessionData } from '../../../domain/types';
 
 export const GetUser = createParamDecorator(
   (data: string, ctx: ExecutionContext) => {
@@ -15,6 +15,6 @@ export const GetUser = createParamDecorator(
       throw new InternalServerErrorException('User not found (req)');
     }
 
-    return !data ? (user as SessionData) : user[data];
+    return !data ? (user as UserSessionData) : user[data];
   },
 );

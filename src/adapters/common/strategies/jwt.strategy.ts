@@ -5,7 +5,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Session } from '../../../domain/entities';
 import { ConfigService } from '../../../domain/services';
 import { AuthRepository } from '../../../domain/repositories';
-import { SessionData, TokenData } from '../../../domain/types';
+import { UserSessionData, TokenData } from '../../../domain/types';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -19,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: TokenData): Promise<SessionData> {
+  async validate(payload: TokenData): Promise<UserSessionData> {
     const { userId, key } = payload;
 
     const sessionData = await this.authRepository.getSessionData(userId, key);

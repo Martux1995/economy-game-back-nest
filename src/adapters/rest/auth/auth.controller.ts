@@ -9,7 +9,7 @@ import { LoginDto } from './dtos/Login.dto';
 import { AuthService } from './auth.service';
 import { IsUserGuard } from '../../common/guards/is-user.guard';
 import { GetUser } from '../../common/decorators/get-user.decorator';
-import { SessionData } from '../../../domain/types';
+import { UserSessionData } from '../../../domain/types';
 
 @Controller('auth')
 export class AuthController {
@@ -29,8 +29,16 @@ export class AuthController {
 
   @Post('logout')
   @UseGuards(IsUserGuard)
-  logout(@GetUser() user: SessionData) {
+  logout(@GetUser() user: UserSessionData) {
     return this.authService.logout(user.userId, user.sessionKey);
   }
 
+  @Post('token')
+  @UseGuards(IsUserGuard)
+  checkToken() {
+    return { ok: true };
+  }
+
+  @Post('token/renew')
+  renewToken() {}
 }
