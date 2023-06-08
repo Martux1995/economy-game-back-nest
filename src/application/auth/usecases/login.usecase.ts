@@ -29,7 +29,7 @@ export class LoginUseCase {
 
     const key = generateRandomUUID();
     const token = this._generateToken(userData.userId, key);
-    await this.authRepository.registerToken(userData.userId, key);
+    await this.authRepository.registerSessionData(userData.userId, key);
 
     return token;
   }
