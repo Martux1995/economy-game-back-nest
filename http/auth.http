@@ -1,10 +1,25 @@
 @domain = localhost:3000
-
-POST http://{{domain}}/auth/login HTTP/1.1
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImtleSI6IjI2MzViYjYzLTQ3NzktNDc0Ni04MjcyLTY5NDMxODg5YzNhOCIsImlhdCI6MTY4NjYyODE5NSwiZXhwIjoxNjg2NjI5OTk1fQ.7mM2I2feHE3jZkN5xq7qKrGMvCP-qqW-p-Z3QJOa8X4
+POST http://{{domain}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "asdasd@asdas.com",
-  "personalNumberId": "11111111-1",
-  "password": "ajsodasj"
+  "email": "asd@asd.com",
+  //"personalNumberId": "11111111-1",
+  "password": "asdasd123"
 }
+
+###
+POST http://{{domain}}/auth/logout
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+POST http://{{domain}}/auth/token
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+POST http://{{domain}}/auth/token/renew
+Content-Type: application/json
+Authorization: Bearer {{token}}
