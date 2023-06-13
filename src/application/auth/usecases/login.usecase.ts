@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { LoginParams } from '../params';
-import { AuthRepository } from '../../../domain/repositories';
+
 import { User } from '../../../domain/entities';
+import { AuthRepository } from '../../../domain/repositories';
+
+import { LoginParams } from '../params';
 import { LoginNotFoundException } from '../exceptions';
-import { comparePassword } from '../../common/helpers/password';
-import { TokenService } from '../../../domain/services';
-import { generateRandomUUID } from '../../common/helpers/uuid';
 import { formatRUN } from '../../common/helpers/run';
+import { comparePassword } from '../../common/helpers/password';
+import { generateRandomUUID } from '../../common/helpers/uuid';
+import { TokenService } from '../../../domain/services';
 
 @Injectable()
 export class LoginUseCase {
