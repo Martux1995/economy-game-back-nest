@@ -7,7 +7,5 @@ export class LogoutUseCase {
 
   async logout(userId: number, key: string) {
     await this.authRepository.removeSessionData(userId, key);
-
-    return { ok: true };
   }
 }
