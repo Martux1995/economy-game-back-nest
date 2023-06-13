@@ -3,12 +3,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { getTypeOrmModuleOptions } from './typeorm.config';
 import { LibrariesModule } from '../libraries/libraries.module';
-import { ConfigService } from '../../domain/services';
 
 import * as ENTITIES from './entities';
 
 import { AuthRepository } from '../../domain/repositories';
 import { AuthRepositoryImp } from './repositories';
+import { ConfigService } from '../../domain/services';
 
 const REPOSITORIES: Provider[] = [
   {

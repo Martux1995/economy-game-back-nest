@@ -1,4 +1,4 @@
-import { TokenData } from '../types/token-data';
+import { TokenData } from '../types';
 
 export abstract class TokenService {
   static TOKEN_EXPIRE = 30 * 60;
