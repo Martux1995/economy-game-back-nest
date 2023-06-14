@@ -9,6 +9,6 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     InfrastructureModule,
   ],
   providers: [JwtStrategy],
-  exports: [JwtStrategy],
+  exports: [JwtStrategy, PassportModule],
 })
 export class CommonModule {}

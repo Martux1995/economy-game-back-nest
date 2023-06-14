@@ -1,11 +1,13 @@
 import { SetMetadata, UseGuards, applyDecorators } from '@nestjs/common';
 import { ERoles } from '../../../domain/enums';
 import { IsUserGuard } from '../guards/is-user.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 export const META_ROLES_VAR = 'rol';
 
 export const Auth = (...roles: ERoles[]) => {
-  return applyDecorators(_RoleProtected(...roles), UseGuards(IsUserGuard));
+  return applyDecorators(
+    SetMetadata(META_ROLES_VAR, roles),
+    UseGuards(AuthGuard(), IsUserGuard),
+  );
 };
-
-const _RoleProtected = (...args: ERoles[]) => SetMetadata(META_ROLES_VAR, args);

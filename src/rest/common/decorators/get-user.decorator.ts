@@ -6,15 +6,15 @@ import {
 import { AppRequest } from '../types';
 
 export const GetUser = createParamDecorator(
-  (data: string, ctx: ExecutionContext) => {
-    const req = ctx.switchToHttp().getRequest<AppRequest>();
-
-    const user = req.user;
+  (param: string, ctx: ExecutionContext) => {
+    const user = ctx.switchToHttp().getRequest<AppRequest>().user;
 
     if (!user) {
-      throw new InternalServerErrorException('User not found (req)');
+      throw new InternalServerErrorException(
+        'User not found (Decorator error)',
+      );
     }
 
-    return !data ? user : user[data];
+    return user;
   },
 );
