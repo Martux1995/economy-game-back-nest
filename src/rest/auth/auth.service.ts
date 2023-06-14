@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
-import { LoginUseCase } from '../../../application/auth/usecases/login.usecase';
-import { LogoutUseCase } from '../../../application/auth/usecases/logout.usecase';
-import { RenewTokenUseCase } from '../../../application/auth/usecases/renew-token.usecase';
+import { LoginUseCase } from '../../application/auth/usecases/login.usecase';
+import { LogoutUseCase } from '../../application/auth/usecases/logout.usecase';
+import { RenewTokenUseCase } from '../../application/auth/usecases/renew-token.usecase';
 
 import { LoginDto } from './dtos/Login.dto';
-import { AppResponse } from '../../common/types';
+import { AppResponse } from '../common/types';
 
 @Injectable()
 export class AuthService {

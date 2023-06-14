@@ -1,8 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common';
 
-import { UserSessionData } from '../../../domain/types';
+import { UserSessionData } from '../../domain/types';
 
-import { Auth, GetUser } from '../../common/decorators';
+import { Auth, GetUser } from '../common/decorators';
 
 import { LoginDto } from './dtos/Login.dto';
 import { AuthService } from './auth.service';

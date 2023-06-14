@@ -1,5 +1,5 @@
 import { IsEmail, IsOptional, IsString } from 'class-validator';
-import { IsChileanRUN } from '../../../common/validators/is-chilean-run';
+import { IsChileanRUN } from '../../common/validators/is-chilean-run';
 
 export class LoginDto {
   @IsOptional()
