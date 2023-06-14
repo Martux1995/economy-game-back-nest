@@ -1,5 +1,4 @@
 import helmet from 'helmet';
-import { useContainer } from 'class-validator';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 
@@ -16,8 +15,6 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-
-  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   await app.listen(3000);
 }
