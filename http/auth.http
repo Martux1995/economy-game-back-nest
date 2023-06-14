@@ -1,5 +1,7 @@
 @domain = localhost:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImtleSI6IjI2MzViYjYzLTQ3NzktNDc0Ni04MjcyLTY5NDMxODg5YzNhOCIsImlhdCI6MTY4NjYyODE5NSwiZXhwIjoxNjg2NjI5OTk1fQ.7mM2I2feHE3jZkN5xq7qKrGMvCP-qqW-p-Z3QJOa8X4
+@token = token
+
+### LOGIN 
 POST http://{{domain}}/auth/login
 Content-Type: application/json
 
@@ -9,17 +11,17 @@ Content-Type: application/json
   "password": "asdasd123"
 }
 
-###
+### LOGOUT
 POST http://{{domain}}/auth/logout
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
-###
+### VERIFY TOKEN
 POST http://{{domain}}/auth/token
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
-###
+### RENEW TOKEN
 POST http://{{domain}}/auth/token/renew
 Content-Type: application/json
 Authorization: Bearer {{token}}
