@@ -5,14 +5,11 @@ export default {
   transform: {
     '^.+.(js|ts)$': ['ts-jest', { tsconfig: 'tsconfig.json' }],
   },
-  globals: {
-    'ts-jest': {
-      isolatedModules: true,
-    },
-  },
+  maxWorkers: 5,
   transformIgnorePatterns: ['node_modules'],
   testPathIgnorePatterns: ['node_modules'],
   coveragePathIgnorePatterns: ['node_modules'],
+  watchPathIgnorePatterns: ['node_modules', 'postgres'],
   collectCoverage: true,
   collectCoverageFrom: [
     'src/**',
