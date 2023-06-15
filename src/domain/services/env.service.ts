@@ -1,4 +1,4 @@
-export abstract class ConfigService {
+export abstract class EnvService {
   abstract getDatabaseHost(): string;
   abstract getDatabasePort(): number;
   abstract getDatabaseUser(): string;

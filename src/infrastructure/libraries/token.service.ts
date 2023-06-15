@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { TokenData } from '../../domain/types/token-data';
-import { ConfigService, TokenService } from '../../domain/services';
+import { EnvService, TokenService } from '../../domain/services';
 
 @Injectable()
 export class TokenServiceImp extends TokenService {
   constructor(
-    private readonly envConfigService: ConfigService,
+    private readonly envConfigService: EnvService,
     private jwtService: JwtService,
   ) {
     super();

@@ -8,7 +8,7 @@ import * as ENTITIES from './entities';
 
 import { AuthRepository } from '../../domain/repositories';
 import { AuthRepositoryImp } from './repositories';
-import { ConfigService } from '../../domain/services';
+import { EnvService } from '../../domain/services';
 
 const REPOSITORIES: Provider[] = [
   {
@@ -22,7 +22,7 @@ const REPOSITORIES: Provider[] = [
     /* Configuración TypeORM */
     TypeOrmModule.forRootAsync({
       imports: [LibrariesModule],
-      inject: [ConfigService],
+      inject: [EnvService],
       useFactory: getTypeOrmModuleOptions,
     }),
     TypeOrmModule.forFeature(Object.values(ENTITIES)),

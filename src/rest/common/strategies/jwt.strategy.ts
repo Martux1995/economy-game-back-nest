@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 import { Session } from '../../../domain/entities';
-import { ConfigService } from '../../../domain/services';
+import { EnvService } from '../../../domain/services';
 import { AuthRepository } from '../../../domain/repositories';
 import { UserSessionData, TokenData } from '../../../domain/types';
 
@@ -11,7 +11,7 @@ import { UserSessionData, TokenData } from '../../../domain/types';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly authRepository: AuthRepository,
-    configService: ConfigService,
+    configService: EnvService,
   ) {
     super({
       secretOrKey: configService.getJwtSecret(),

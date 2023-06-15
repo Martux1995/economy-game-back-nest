@@ -1,2 +1,2 @@
-export * from './config.service';
+export * from './env.service';
 export * from './token.service';
