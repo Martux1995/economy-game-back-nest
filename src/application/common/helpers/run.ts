@@ -17,7 +17,7 @@ export const validateRUN = (run: string): boolean => {
  * @returns RUN given in the format `XXX.XXX.XXX-X` or `XXXXXXXXX-X`.
  */
 export const formatRUN = (run: string, dots = true): string => {
-  return format(run, { dots });
+  return validateRUN(run) ? format(run, { dots }) : null;
 };
 
 /**
@@ -26,5 +26,5 @@ export const formatRUN = (run: string, dots = true): string => {
  * @returns RUN given in the format `XXXXXXXXXX`.
  */
 export const cleanRUN = (run: string): string => {
-  return clean(run);
+  return validateRUN(run) ? clean(run) : null;
 };
