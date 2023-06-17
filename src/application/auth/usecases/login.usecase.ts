@@ -42,9 +42,10 @@ export class LoginUseCase {
   ): Promise<User> {
     if (email) {
       return this.authRepository.getUserDataByEmail(email);
-    } else {
+    } else if (personalNumber) {
       return this.authRepository.getUserDataByPersonalNumber(personalNumber);
     }
+    return null;
   }
 
   private _generateToken(userId: number, key: string): string {
