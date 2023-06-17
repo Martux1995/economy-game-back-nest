@@ -22,7 +22,7 @@ describe('RUNHelper', () => {
   });
 
   describe('formatRUN', () => {
-    const { validRUNs } = RUNMock;
+    const { validRUNs, invalidRUNs } = RUNMock;
 
     it('should return a formatted string with dots and hyphen with the given RUN', () => {
       for (const run of validRUNs) {
@@ -43,10 +43,17 @@ describe('RUNHelper', () => {
         expect(result).toMatch(/^\d{7,9}-(\d|K)$/);
       }
     });
+
+    it('should return null if the RUN given are invalid', () => {
+      for (const run of invalidRUNs) {
+        const result = formatRUN(run);
+        expect(result).toBeNull();
+      }
+    });
   });
 
   describe('cleanRUN', () => {
-    const { validRUNs } = RUNMock;
+    const { validRUNs, invalidRUNs } = RUNMock;
 
     it('should return a clean RUN (without dots and hyphen) for the given RUN', () => {
       for (const run of validRUNs) {
@@ -54,6 +61,13 @@ describe('RUNHelper', () => {
         expect(result).toBeDefined();
         expect(typeof result).toBe('string');
         expect(result).toMatch(/^\d*K?$/);
+      }
+    });
+
+    it('should return null if the RUN given are invalid', () => {
+      for (const run of invalidRUNs) {
+        const result = cleanRUN(run);
+        expect(result).toBeNull();
       }
     });
   });
