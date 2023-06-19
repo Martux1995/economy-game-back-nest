@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 
-import { AuthRepository } from '../../../domain/repositories';
 import { TokenService } from '../../../domain/services';
+import { AuthRepository } from '../../../domain/repositories';
 
 import { generateRandomUUID } from '../../common/helpers/uuid';
-import { SessionNotFoundException } from '../exceptions';
+
+import {
+  SessionExpiredException,
+  SessionNotFoundException,
+} from '../exceptions';
 
 @Injectable()
 export class RenewTokenUseCase {
@@ -14,11 +18,7 @@ export class RenewTokenUseCase {
   ) {}
 
   async renewToken(userId: number, oldKey: string) {
-    const session = await this.authRepository.getSessionData(userId, oldKey);
-
-    if (!session) {
-      throw new SessionNotFoundException('Session not found');
-    }
+    await this._getSession(userId, oldKey);
 
     const newKey = generateRandomUUID();
     const token = this.tokenService.sign({
@@ -30,5 +30,17 @@ export class RenewTokenUseCase {
     await this.authRepository.removeSessionData(userId, oldKey);
 
     return token;
+  }
+
+  private async _getSession(userId: number, oldKey: string) {
+    const session = await this.authRepository.getSessionData(userId, oldKey);
+
+    if (!session) {
+      throw new SessionNotFoundException('Session not found');
+    }
+
+    if (session.expiredDate < new Date()) {
+      throw new SessionExpiredException('Session expired. Please login again.');
+    }
   }
 }

@@ -1,5 +1,3 @@
-export class SessionNotFoundException extends Error {
-  constructor(msg: string) {
-    super(msg);
-  }
-}
+export class SessionNotFoundException extends Error {}
+
+export class SessionExpiredException extends Error {}
