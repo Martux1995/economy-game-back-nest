@@ -11,7 +11,7 @@ import { LoginNotFoundException } from '../../exceptions';
 
 import { LoginUseCase } from '../login.usecase';
 
-import { loginUseCaseMock } from './login.mock';
+import { loginUseCaseMock } from './login-usecase.mock';
 
 describe('LoginUseCase', () => {
   let useCase: LoginUseCase;
