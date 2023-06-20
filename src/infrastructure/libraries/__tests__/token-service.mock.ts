@@ -2,7 +2,7 @@ import { TokenData } from '../../../domain/types';
 
 const payload: TokenData = {
   key: '123132',
-  userId: 234542,
+  userId: '234542',
 };
 
 const jwtParams = {

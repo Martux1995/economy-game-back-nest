@@ -1,29 +1,26 @@
-import { User } from '../../../../domain/entities';
+import { Session, User } from '../../../../domain/entities';
 import { LoginParams } from '../../params';
 
 const userDataMock: User = {
-  userId: 1,
+  userId: 'id01',
+  firstName: 'testing',
+  lastName: 'user',
+  email: 'testing@mail-economy.com',
+  personalNumberId: '11111111-1',
   passHash: 'dont care',
+  passResetToken: null,
+  passResetExpire: null,
   isAdmin: true,
   enabled: true,
   createdDate: new Date(),
-  person: {
-    personId: 1,
-    personNumberId: '11111111-1',
-    email: 'testing@mail-economy.com',
-    firstName: 'testing',
-    lastName: 'user',
-    createdDate: new Date(),
-  },
-  session: [
-    {
-      createdDate: new Date(),
-      expiredDate: new Date(),
-      key: 'dont care',
-      sessionId: 1,
-      user: null,
-    },
-  ],
+  session: [],
+};
+
+const userSessionDataMock: Session = {
+  createdDate: new Date(),
+  expiredDate: new Date(),
+  sessionId: 'sid01',
+  user: { userId: 'id01' } as User,
 };
 
 // EMAILS MOCKS
@@ -66,6 +63,7 @@ const loginWithNoneMock: LoginParams = {
 
 export const loginUseCaseMock = {
   user: userDataMock,
+  session: userSessionDataMock,
   email: {
     correct: loginWithEmailCorrectMock,
     wrongEmail: loginWithEmailWrongEmailMock,

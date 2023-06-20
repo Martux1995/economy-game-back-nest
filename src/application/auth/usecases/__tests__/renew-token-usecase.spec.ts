@@ -1,8 +1,6 @@
 import { Test } from '@nestjs/testing';
-import { AuthRepository } from '../../../../domain/repositories';
+import { SessionRepository } from '../../../../domain/repositories';
 import { TokenService } from '../../../../domain/services';
-
-import * as uuidHelpers from '../../../common/helpers/uuid';
 
 import { RenewTokenUseCase } from '../renew-token.usecase';
 import { renewTokenUseCaseMock } from './renew-token-usecase.mock';
@@ -13,18 +11,18 @@ import {
 
 describe('RenewTokenUseCase', () => {
   let useCase: RenewTokenUseCase;
-  let repo: AuthRepository;
+  let repo: SessionRepository;
   let tokenService: TokenService;
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       providers: [
         RenewTokenUseCase,
         {
-          provide: AuthRepository,
+          provide: SessionRepository,
           useFactory: () => ({
-            getSessionData: jest.fn(),
-            registerSessionData: jest.fn(),
-            removeSessionData: jest.fn(),
+            deleteSession: jest.fn(),
+            getSession: jest.fn(),
+            createSession: jest.fn(),
           }),
         },
         {
@@ -37,7 +35,7 @@ describe('RenewTokenUseCase', () => {
     }).compile();
 
     useCase = module.get<RenewTokenUseCase>(RenewTokenUseCase);
-    repo = module.get<AuthRepository>(AuthRepository);
+    repo = module.get<SessionRepository>(SessionRepository);
     tokenService = module.get<TokenService>(TokenService);
   });
 
@@ -45,52 +43,54 @@ describe('RenewTokenUseCase', () => {
     expect(module).toBeDefined();
     jest.resetAllMocks();
     jest.spyOn(tokenService, 'sign').mockReturnValue('random-token');
-    jest.spyOn(uuidHelpers, 'generateRandomUUID').mockReturnValue('random-key');
   });
 
-  const { sessionData, expiredSessionData, renewData } = renewTokenUseCaseMock;
+  const { sessionData, expiredSessionData, newSessionData, renewData } =
+    renewTokenUseCaseMock;
 
   it('should remove the old token and return a new token with the ID and key given', async () => {
-    const { userId, oldKey } = renewData;
+    const { userId, oldSessionId } = renewData;
 
-    const getSessionDataSpyOn = jest
-      .spyOn(repo, 'getSessionData')
+    const getSessionSpyOn = jest
+      .spyOn(repo, 'getSession')
       .mockResolvedValue(sessionData);
-    const registerSessionDataSpyOn = jest.spyOn(repo, 'registerSessionData');
-    const removeSessionDataSpyOn = jest.spyOn(repo, 'removeSessionData');
+    const createSessionSpyOn = jest
+      .spyOn(repo, 'createSession')
+      .mockResolvedValue(newSessionData);
+    const deleteSessionSpyOn = jest.spyOn(repo, 'deleteSession');
 
-    const result = await useCase.renewToken(userId, oldKey);
+    const result = await useCase.renewToken(userId, oldSessionId);
 
     expect(result).toBeDefined();
     expect(result).toEqual('random-token');
-    expect(getSessionDataSpyOn).toBeCalledWith(userId, oldKey);
-    expect(registerSessionDataSpyOn).toBeCalledWith(userId, 'random-key');
-    expect(removeSessionDataSpyOn).toBeCalledWith(userId, oldKey);
+    expect(getSessionSpyOn).toBeCalledWith(oldSessionId, userId);
+    expect(deleteSessionSpyOn).toBeCalledWith(oldSessionId);
+    expect(createSessionSpyOn).toBeCalledWith(userId, expect.any(Date));
   });
 
   it('should thrown an error if the session expired', async () => {
-    const { userId, oldKey } = renewData;
+    const { userId, oldSessionId } = renewData;
 
-    const getSessionDataSpyOn = jest
-      .spyOn(repo, 'getSessionData')
+    const getSessionSpyOn = jest
+      .spyOn(repo, 'getSession')
       .mockResolvedValue(expiredSessionData);
 
     await expect(async () =>
-      useCase.renewToken(userId, oldKey),
+      useCase.renewToken(userId, oldSessionId),
     ).rejects.toThrow(SessionExpiredException);
-    expect(getSessionDataSpyOn).toBeCalledWith(userId, oldKey);
+    expect(getSessionSpyOn).toBeCalledWith(oldSessionId, userId);
   });
 
   it('should thrown an error if session not found in the DB', async () => {
-    const { userId, oldKey } = renewData;
+    const { userId, oldSessionId } = renewData;
 
-    const getSessionDataSpyOn = jest
-      .spyOn(repo, 'getSessionData')
+    const getSessionSpyOn = jest
+      .spyOn(repo, 'getSession')
       .mockResolvedValue(null);
 
     await expect(async () =>
-      useCase.renewToken(userId, oldKey),
+      useCase.renewToken(userId, oldSessionId),
     ).rejects.toThrow(SessionNotFoundException);
-    expect(getSessionDataSpyOn).toBeCalledWith(userId, oldKey);
+    expect(getSessionSpyOn).toBeCalledWith(oldSessionId, userId);
   });
 });

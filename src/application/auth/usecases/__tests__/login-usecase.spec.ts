@@ -1,10 +1,12 @@
 import { Test } from '@nestjs/testing';
 
 import { TokenService } from '../../../../domain/services';
-import { AuthRepository } from '../../../../domain/repositories';
+import {
+  UserRepository,
+  SessionRepository,
+} from '../../../../domain/repositories';
 
 import * as runHelpers from '../../../common/helpers/run';
-import * as uuidHelpers from '../../../common/helpers/uuid';
 import * as passwordHelpers from '../../../common/helpers/password';
 
 import { LoginNotFoundException } from '../../exceptions';
@@ -15,7 +17,8 @@ import { loginUseCaseMock } from './login-usecase.mock';
 
 describe('LoginUseCase', () => {
   let useCase: LoginUseCase;
-  let authRepo: AuthRepository;
+  let userRepo: UserRepository;
+  let sessionRepo: SessionRepository;
   let tokenService: TokenService;
 
   beforeAll(async () => {
@@ -23,24 +26,27 @@ describe('LoginUseCase', () => {
       providers: [
         LoginUseCase,
         {
-          provide: AuthRepository,
+          provide: UserRepository,
           useFactory: () => ({
-            registerSessionData: jest.fn(),
-            getUserDataByEmail: jest.fn(),
-            getUserDataByPersonalNumber: jest.fn(),
+            removePassResetToken: jest.fn(),
+            getUserByEmail: jest.fn(),
+            getUserByPersonalNumber: jest.fn(),
           }),
         },
         {
+          provide: SessionRepository,
+          useFactory: () => ({ createSession: jest.fn() }),
+        },
+        {
           provide: TokenService,
-          useFactory: () => ({
-            sign: jest.fn(),
-          }),
+          useFactory: () => ({ sign: jest.fn() }),
         },
       ],
     }).compile();
 
     useCase = module.get<LoginUseCase>(LoginUseCase);
-    authRepo = module.get<AuthRepository>(AuthRepository);
+    userRepo = module.get<UserRepository>(UserRepository);
+    sessionRepo = module.get<SessionRepository>(SessionRepository);
     tokenService = module.get<TokenService>(TokenService);
   });
 
@@ -48,40 +54,41 @@ describe('LoginUseCase', () => {
     expect(module).toBeDefined();
     jest.resetAllMocks();
     jest.spyOn(tokenService, 'sign').mockReturnValue('random-token');
-    jest
-      .spyOn(uuidHelpers, 'generateRandomUUID')
-      .mockReturnValue('random-uuid');
   });
 
-  const { user } = loginUseCaseMock;
+  const { user, session } = loginUseCaseMock;
   describe('Login with email', () => {
     const { correct, wrongEmail, wrongPass } = loginUseCaseMock.email;
 
     it('should return a token if the the user email and his password are valid', async () => {
       jest.spyOn(passwordHelpers, 'comparePassword').mockReturnValue(true);
       const getUserDataByEmailSpyOn = jest
-        .spyOn(authRepo, 'getUserDataByEmail')
+        .spyOn(userRepo, 'getUserByEmail')
         .mockResolvedValue(user);
-      const registerSessionDataSpyOn = jest.spyOn(
-        authRepo,
-        'registerSessionData',
+      const removePassResetTokenSpyOn = jest.spyOn(
+        userRepo,
+        'removePassResetToken',
       );
+      const registerSessionDataSpyOn = jest
+        .spyOn(sessionRepo, 'createSession')
+        .mockResolvedValue(session);
 
       const result = await useCase.login(correct);
 
       expect(result).toBeDefined();
       expect(result).toEqual('random-token');
       expect(getUserDataByEmailSpyOn).toBeCalledWith(correct.email);
+      expect(removePassResetTokenSpyOn).toBeCalledWith(user.userId);
       expect(registerSessionDataSpyOn).toBeCalledWith(
         user.userId,
-        'random-uuid',
+        expect.any(Date),
       );
     });
 
     it('should throw an error if the user email exists but the password is wrong', async () => {
       jest.spyOn(passwordHelpers, 'comparePassword').mockReturnValue(false);
       const getUserDataByEmailSpyOn = jest
-        .spyOn(authRepo, 'getUserDataByEmail')
+        .spyOn(userRepo, 'getUserByEmail')
         .mockResolvedValue(user);
 
       await expect(async () => useCase.login(wrongPass)).rejects.toThrow(
@@ -92,7 +99,7 @@ describe('LoginUseCase', () => {
 
     it('should throw an error if the user email does not exists', async () => {
       const getUserDataByEmailSpyOn = jest
-        .spyOn(authRepo, 'getUserDataByEmail')
+        .spyOn(userRepo, 'getUserByEmail')
         .mockResolvedValue(null);
 
       await expect(async () => useCase.login(wrongEmail)).rejects.toThrow(
@@ -110,12 +117,15 @@ describe('LoginUseCase', () => {
         .spyOn(runHelpers, 'formatRUN')
         .mockReturnValue(correct.personalNumber.replace('.', ''));
       const getUserDataByPersonalNumberSpyOn = jest
-        .spyOn(authRepo, 'getUserDataByPersonalNumber')
+        .spyOn(userRepo, 'getUserByPersonalNumber')
         .mockResolvedValue(user);
-      const registerSessionDataSpyOn = jest.spyOn(
-        authRepo,
-        'registerSessionData',
+      const removePassResetTokenSpyOn = jest.spyOn(
+        userRepo,
+        'removePassResetToken',
       );
+      const registerSessionDataSpyOn = jest
+        .spyOn(sessionRepo, 'createSession')
+        .mockResolvedValue(session);
 
       const result = await useCase.login(correct);
 
@@ -124,9 +134,10 @@ describe('LoginUseCase', () => {
       expect(getUserDataByPersonalNumberSpyOn).toBeCalledWith(
         correct.personalNumber.replace('.', ''),
       );
+      expect(removePassResetTokenSpyOn).toBeCalledWith(user.userId);
       expect(registerSessionDataSpyOn).toBeCalledWith(
         user.userId,
-        'random-uuid',
+        expect.any(Date),
       );
     });
 
@@ -136,7 +147,7 @@ describe('LoginUseCase', () => {
         .mockReturnValue(wrongPass.personalNumber.replace('.', ''));
       jest.spyOn(passwordHelpers, 'comparePassword').mockReturnValue(false);
       const getUserDataByPersonalNumberSpyOn = jest
-        .spyOn(authRepo, 'getUserDataByPersonalNumber')
+        .spyOn(userRepo, 'getUserByPersonalNumber')
         .mockResolvedValue(user);
 
       await expect(async () => useCase.login(wrongPass)).rejects.toThrow(
@@ -152,7 +163,7 @@ describe('LoginUseCase', () => {
         .spyOn(runHelpers, 'formatRUN')
         .mockReturnValue(wrongPersonalId.personalNumber.replace('.', ''));
       const getUserDataByPersonalNumberSpyOn = jest
-        .spyOn(authRepo, 'getUserDataByPersonalNumber')
+        .spyOn(userRepo, 'getUserByPersonalNumber')
         .mockResolvedValue(null);
 
       await expect(async () => useCase.login(wrongPersonalId)).rejects.toThrow(

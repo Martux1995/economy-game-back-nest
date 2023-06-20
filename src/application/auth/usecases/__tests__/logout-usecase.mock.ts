@@ -1,6 +1,5 @@
 const userData = {
-  userId: 123456,
-  key: 'abcdef',
+  sessionId: 'abcdef',
 };
 
 export const logoutUseCaseMock = {
