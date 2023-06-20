@@ -35,8 +35,8 @@ export class AuthService {
     };
   }
 
-  async logout(userId: number, key: string): Promise<AppResponse> {
-    await this.logoutUseCase.logout(userId, key);
+  async logout(sessionId: string): Promise<AppResponse> {
+    await this.logoutUseCase.logout(sessionId);
 
     return {
       ok: true,
@@ -52,10 +52,10 @@ export class AuthService {
   }
 
   async renewToken(
-    userId: number,
-    oldKey: string,
+    userId: string,
+    oldSessionId: string,
   ): Promise<AppResponse<{ token: string }>> {
-    const token = await this.renewTokenUseCase.renewToken(userId, oldKey);
+    const token = await this.renewTokenUseCase.renewToken(userId, oldSessionId);
 
     return {
       ok: true,

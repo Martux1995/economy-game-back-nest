@@ -6,15 +6,13 @@ import { LibrariesModule } from '../libraries/libraries.module';
 
 import * as ENTITIES from './entities';
 
-import { AuthRepository } from '../../domain/repositories';
-import { AuthRepositoryImp } from './repositories';
+import { SessionRepository, UserRepository } from '../../domain/repositories';
+import { SessionRepositoryImp, UserRepositoryImp } from './repositories';
 import { EnvService } from '../../domain/services';
 
 const REPOSITORIES: Provider[] = [
-  {
-    provide: AuthRepository,
-    useClass: AuthRepositoryImp,
-  },
+  { provide: UserRepository, useClass: UserRepositoryImp },
+  { provide: SessionRepository, useClass: SessionRepositoryImp },
 ];
 
 @Module({

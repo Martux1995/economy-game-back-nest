@@ -7,25 +7,28 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserEntity } from './user.entity';
-import { ESessionColumnNames, ETableNames } from '../enums';
+
 import { Session } from '../../../domain/entities';
+
+import { ESessionColumnNames, ETableNames } from '../enums';
+
+import { UserEntity } from './user.entity';
 
 @Entity({ name: ETableNames.Session })
 export class SessionEntity extends BaseEntity implements Session {
-  @PrimaryGeneratedColumn({ name: ESessionColumnNames.sessionId })
-  sessionId: number;
+  @PrimaryGeneratedColumn('uuid', { name: ESessionColumnNames.sessionId })
+  sessionId: string;
 
-  @Column({ type: 'text', name: ESessionColumnNames.sessionKey })
-  key: string;
-
-  @CreateDateColumn({ name: ESessionColumnNames.createdDate })
+  @CreateDateColumn({
+    type: 'timestamptz',
+    name: ESessionColumnNames.createdDate,
+  })
   createdDate: Date;
 
-  @Column({ type: 'timestamp', name: ESessionColumnNames.expiredDate })
+  @Column({ type: 'timestamptz', name: ESessionColumnNames.expiredDate })
   expiredDate: Date;
 
-  @ManyToOne(() => UserEntity, (u) => u.session)
+  @ManyToOne(() => UserEntity, (user) => user.session)
   @JoinColumn({ name: ESessionColumnNames.userId })
   user: UserEntity;
 }

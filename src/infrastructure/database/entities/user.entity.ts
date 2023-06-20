@@ -3,39 +3,62 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ETableNames, EUserColumnNames } from '../enums';
 import { User } from '../../../domain/entities';
-import { PersonEntity } from './person.entity';
+
+import { ETableNames, EUserColumnNames } from '../enums';
+
 import { SessionEntity } from './session.entity';
 
 @Entity({ name: ETableNames.User })
 export class UserEntity extends BaseEntity implements User {
-  @PrimaryGeneratedColumn({ name: EUserColumnNames.userId })
-  userId: number;
+  @PrimaryGeneratedColumn('uuid', { name: EUserColumnNames.userId })
+  userId: string;
+
+  @Column({ type: 'text', name: EUserColumnNames.firstName })
+  firstName: string;
+
+  @Column({ type: 'text', name: EUserColumnNames.lastName })
+  lastName: string;
+
+  @Column({ type: 'text', name: EUserColumnNames.email })
+  email: string;
+
+  @Column({
+    type: 'text',
+    name: EUserColumnNames.personalNumberId,
+    nullable: true,
+  })
+  personalNumberId: string | null;
 
   @Column({ type: 'text', name: EUserColumnNames.passHash })
   passHash: string;
 
+  @Column({
+    type: 'text',
+    name: EUserColumnNames.passResetToken,
+    nullable: true,
+  })
+  passResetToken: string | null;
+
+  @Column({
+    type: 'timestamptz',
+    name: EUserColumnNames.passResetExpire,
+    nullable: true,
+  })
+  passResetExpire: Date | null;
+
   @Column({ type: 'boolean', name: EUserColumnNames.isAdmin, default: false })
   isAdmin: boolean;
 
-  @CreateDateColumn({ name: EUserColumnNames.createdDate })
+  @CreateDateColumn({ type: 'timestamptz', name: EUserColumnNames.createdDate })
   createdDate: Date;
 
   @Column({ type: 'boolean', name: EUserColumnNames.enabled, default: true })
   enabled: boolean;
 
-  @OneToOne(() => PersonEntity, (p) => p.personId)
-  @JoinColumn({
-    name: EUserColumnNames.personId,
-  })
-  person: PersonEntity;
-
-  @OneToMany(() => SessionEntity, (s) => s.sessionId)
+  @OneToMany(() => SessionEntity, (session) => session.user)
   session: SessionEntity[];
 }

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { AuthRepository } from '../../../domain/repositories';
+import { SessionRepository } from '../../../domain/repositories';
 
 @Injectable()
 export class LogoutUseCase {
-  constructor(private readonly authRepository: AuthRepository) {}
+  constructor(private readonly sessionRepository: SessionRepository) {}
 
-  async logout(userId: number, key: string) {
-    await this.authRepository.removeSessionData(userId, key);
+  async logout(sessionId: string) {
+    await this.sessionRepository.deleteSession(sessionId);
   }
 }

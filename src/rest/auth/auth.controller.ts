@@ -19,7 +19,7 @@ export class AuthController {
   @Auth()
   @Post('logout')
   logout(@GetUser() user: UserSessionData) {
-    return this.authService.logout(user.userId, user.sessionKey);
+    return this.authService.logout(user.sessionKey);
   }
 
   @Auth()

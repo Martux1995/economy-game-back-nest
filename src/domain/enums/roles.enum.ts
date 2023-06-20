@@ -1,4 +1,5 @@
 export enum ERoles {
-  Admin = 'admin',
-  User = 'user',
+  Admin = 'ADMIN',
+  Player = 'PLAYER',
+  User = 'USER',
 }

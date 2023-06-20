@@ -1,16 +1,17 @@
-import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 
+import { ERoles } from '../../../domain/enums';
 import { Session } from '../../../domain/entities';
 import { EnvService } from '../../../domain/services';
-import { AuthRepository } from '../../../domain/repositories';
+import { SessionRepository } from '../../../domain/repositories';
 import { UserSessionData, TokenData } from '../../../domain/types';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    private readonly authRepository: AuthRepository,
+    private readonly sessionRepository: SessionRepository,
     configService: EnvService,
   ) {
     super({
@@ -22,16 +23,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: TokenData): Promise<UserSessionData> {
     const { userId, key } = payload;
 
-    const sessionData = await this.authRepository.getSessionData(userId, key);
+    const session = await this.sessionRepository.getSession(key, userId);
 
-    this._checkPermissions(sessionData);
+    this._checkPermissions(session);
 
     return {
-      userId: sessionData.user.userId,
-      sessionKey: sessionData.key,
-      firstName: sessionData.user.person.firstName,
-      lastName: sessionData.user.person.lastName,
-      role: sessionData.user.isAdmin ? 'ADMIN' : 'USER',
+      userId: session.user.userId,
+      sessionKey: session.sessionId,
+      firstName: session.user.firstName,
+      lastName: session.user.lastName,
+      role: session.user.isAdmin ? ERoles.Admin : ERoles.User,
     };
   }
 

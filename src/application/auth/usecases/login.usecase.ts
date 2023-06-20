@@ -1,19 +1,24 @@
+import { add } from 'date-fns';
 import { Injectable } from '@nestjs/common';
 
 import { User } from '../../../domain/entities';
-import { AuthRepository } from '../../../domain/repositories';
+import { TokenService } from '../../../domain/services';
+import {
+  SessionRepository,
+  UserRepository,
+} from '../../../domain/repositories';
+
+import { formatRUN } from '../../common/helpers/run';
+import { comparePassword } from '../../common/helpers/password';
 
 import { LoginParams } from '../params';
 import { LoginNotFoundException } from '../exceptions';
-import { formatRUN } from '../../common/helpers/run';
-import { comparePassword } from '../../common/helpers/password';
-import { generateRandomUUID } from '../../common/helpers/uuid';
-import { TokenService } from '../../../domain/services';
 
 @Injectable()
 export class LoginUseCase {
   constructor(
-    private readonly authRepository: AuthRepository,
+    private readonly userRepository: UserRepository,
+    private readonly sessionRepository: SessionRepository,
     private readonly tokenService: TokenService,
   ) {}
 
@@ -29,11 +34,8 @@ export class LoginUseCase {
       throw new LoginNotFoundException('Los datos ingresados son incorrectos');
     }
 
-    const key = generateRandomUUID();
-    const token = this._generateToken(userData.userId, key);
-    await this.authRepository.registerSessionData(userData.userId, key);
-
-    return token;
+    await this.userRepository.removePassResetToken(userData.userId);
+    return this._generateSession(userData.userId);
   }
 
   private async _getUserData(
@@ -41,17 +43,22 @@ export class LoginUseCase {
     personalNumber: string,
   ): Promise<User> {
     if (email) {
-      return this.authRepository.getUserDataByEmail(email);
+      return this.userRepository.getUserByEmail(email);
     } else if (personalNumber) {
-      return this.authRepository.getUserDataByPersonalNumber(personalNumber);
+      return this.userRepository.getUserByPersonalNumber(personalNumber);
     }
     return null;
   }
 
-  private _generateToken(userId: number, key: string): string {
+  private async _generateSession(userId: string) {
+    const expireDate = add(new Date(), { hours: 12 });
+    const { sessionId } = await this.sessionRepository.createSession(
+      userId,
+      expireDate,
+    );
     return this.tokenService.sign({
       userId,
-      key,
+      key: sessionId,
     });
   }
 }

@@ -1,7 +1,9 @@
+import { ERoles } from '../enums';
+
 export type UserSessionData = {
-  userId: number;
+  userId: string;
   sessionKey: string;
   firstName: string;
   lastName: string;
-  role: 'ADMIN' | 'USER';
+  role: ERoles;
 };
