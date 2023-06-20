@@ -7,6 +7,8 @@ services:
     ports:
       - "5432:5432"
     environment:
+      TZ: 'America/Santiago'
+      PGTZ: 'America/Santiago'
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASS}
       POSTGRES_DB: ${DATABASE_NAME}
