@@ -4,8 +4,8 @@ import { UserSessionData } from '../../domain/types';
 
 import { Auth, GetUser } from '../common/decorators';
 
-import { LoginDto } from './dtos/Login.dto';
 import { AuthService } from './auth.service';
+import { LoginDto, ChangePasswordDto, PassTokenRequestDto } from './dtos';
 
 @Controller('auth')
 export class AuthController {
@@ -32,5 +32,15 @@ export class AuthController {
   @Post('token/renew')
   newToken(@GetUser() user: UserSessionData) {
     return this.authService.renewToken(user.userId, user.sessionKey);
+  }
+
+  @Post('password/recover')
+  passTokenRequest(@Body() passTokenRequestDto: PassTokenRequestDto) {
+    return this.authService.requestPasswordRecovery(passTokenRequestDto);
+  }
+
+  @Post('password/change')
+  changePassword(@Body() changePasswordDto: ChangePasswordDto) {
+    return this.authService.changePassword(changePasswordDto);
   }
 }

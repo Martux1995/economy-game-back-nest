@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -30,6 +31,7 @@ export class UserEntity extends BaseEntity implements User {
     type: 'text',
     name: EUserColumnNames.personalNumberId,
     nullable: true,
+    unique: true,
   })
   personalNumberId: string | null;
 
@@ -41,6 +43,7 @@ export class UserEntity extends BaseEntity implements User {
     name: EUserColumnNames.passResetToken,
     nullable: true,
   })
+  @Index({ unique: true })
   passResetToken: string | null;
 
   @Column({

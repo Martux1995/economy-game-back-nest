@@ -1,7 +1,9 @@
 import { DataSource } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 
+import { User } from '../../../domain/entities';
 import { UserRepository } from '../../../domain/repositories';
+
 import { UserEntity } from '../entities';
 
 @Injectable()
@@ -28,6 +30,13 @@ export class UserRepositoryImp extends UserRepository {
     return this.dataSource.getRepository(UserEntity).findOne({
       relations: { session: true },
       where: { personalNumberId },
+    });
+  }
+
+  async getUserByPassRecoverToken(passRecoverToken: string): Promise<User> {
+    return this.dataSource.getRepository(UserEntity).findOne({
+      relations: { session: true },
+      where: { passResetToken: passRecoverToken },
     });
   }
 

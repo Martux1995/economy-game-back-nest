@@ -4,11 +4,11 @@ import { IsChileanRUN } from '../../common/validators/is-chilean-run';
 export class LoginDto {
   @IsOptional()
   @IsEmail()
-  email: string;
+  email?: string;
 
   @IsOptional()
   @IsChileanRUN()
-  personalNumberId: string;
+  personalNumberId?: string;
 
   @IsString()
   password: string;

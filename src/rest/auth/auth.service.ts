@@ -3,9 +3,12 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { LoginUseCase } from '../../application/auth/usecases/login.usecase';
 import { LogoutUseCase } from '../../application/auth/usecases/logout.usecase';
 import { RenewTokenUseCase } from '../../application/auth/usecases/renew-token.usecase';
+import { PasswordChangeUseCase } from '../../application/auth/usecases/password-change.usecase';
+import { PasswordTokenRequestUseCase } from '../../application/auth/usecases/password-token-request.usecase';
 
-import { LoginDto } from './dtos/Login.dto';
 import { AppResponse } from '../common/types';
+import { LoginDto } from './dtos/login.dto';
+import { ChangePasswordDto, PassTokenRequestDto } from './dtos';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +16,8 @@ export class AuthService {
     private readonly loginUseCase: LoginUseCase,
     private readonly logoutUseCase: LogoutUseCase,
     private readonly renewTokenUseCase: RenewTokenUseCase,
+    private readonly passwordTokenRequestUseCase: PasswordTokenRequestUseCase,
+    private readonly passwordChangeUseCase: PasswordChangeUseCase,
   ) {}
 
   async login(loginDto: LoginDto) {
@@ -61,6 +66,32 @@ export class AuthService {
       ok: true,
       msg: 'Token renewed',
       token,
+    };
+  }
+
+  async requestPasswordRecovery(
+    passTokenRequestDto: PassTokenRequestDto,
+  ): Promise<AppResponse<any>> {
+    const { email } = passTokenRequestDto;
+    const passCode = await this.passwordTokenRequestUseCase.getToken(email);
+
+    return {
+      ok: true,
+      msg: 'Password change requested successfully. Check your email.',
+      passCode,
+    };
+  }
+
+  async changePassword(
+    changePasswordDto: ChangePasswordDto,
+  ): Promise<AppResponse> {
+    const { key, newPassword } = changePasswordDto;
+
+    await this.passwordChangeUseCase.changePassword(key, newPassword);
+
+    return {
+      ok: true,
+      msg: 'Password changed successfully. Please LogIn again.',
     };
   }
 }
