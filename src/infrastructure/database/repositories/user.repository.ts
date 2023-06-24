@@ -33,13 +33,6 @@ export class UserRepositoryImp extends UserRepository {
     });
   }
 
-  async getUserByPassRecoverToken(passRecoverToken: string): Promise<User> {
-    return this.dataSource.getRepository(UserEntity).findOne({
-      relations: { session: true },
-      where: { passResetToken: passRecoverToken },
-    });
-  }
-
   async setPassResetToken(
     userId: string,
     token: string,

@@ -1,8 +1,7 @@
-import { IsString, IsStrongPassword, IsUUID } from 'class-validator';
+import { IsString, IsStrongPassword } from 'class-validator';
 
 export class ChangePasswordDto {
   @IsString()
-  @IsUUID('4')
   key: string;
 
   @IsString()

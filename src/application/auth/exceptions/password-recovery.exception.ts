@@ -19,6 +19,15 @@ export class PassRecoverTokenExpireException extends Error {
   }
 }
 
+export class PassRecoverCodeMismatchException extends Error {
+  constructor() {
+    super(
+      'This recover token does not match with the user requested. Try to request it again.',
+    );
+    this.name = 'PassRecoverCodeMismatchException';
+  }
+}
+
 export class UserNotFoundException extends Error {
   constructor() {
     super('User not found.');

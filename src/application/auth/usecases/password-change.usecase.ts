@@ -1,8 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from '../../../domain/repositories';
+
 import { User } from '../../../domain/entities';
+import { TokenService } from '../../../domain/services';
+import { UserRepository } from '../../../domain/repositories';
+
 import { hashPassword } from '../../common/helpers/password';
+
 import {
+  PassRecoverCodeMismatchException,
   PassRecoverTokenExpireException,
   PassRecoverTokenInvalidException,
   UserDisabledException,
@@ -10,10 +15,15 @@ import {
 
 @Injectable()
 export class PasswordChangeUseCase {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly tokenService: TokenService,
+  ) {}
 
   async changePassword(token: string, newPassword: string) {
-    const userId = await this._checkUserAndReturnUserId(token);
+    const { userId, key: passCode } = this._decodeToken(token);
+
+    await this._checkUserPasswordRequest(userId, passCode);
 
     const passHash = hashPassword(newPassword);
 
@@ -21,19 +31,16 @@ export class PasswordChangeUseCase {
     await this.userRepository.removePassResetToken(userId);
   }
 
-  private async _checkUserAndReturnUserId(
-    changePasswordToken: string,
-  ): Promise<string> {
-    const userData = await this.userRepository.getUserByPassRecoverToken(
-      changePasswordToken,
-    );
-
-    this._checkUser(userData);
-
-    return userData.userId;
+  private _decodeToken(token: string) {
+    return this.tokenService.verify(token);
   }
 
-  private _checkUser(userData: User) {
+  private async _checkUserPasswordRequest(userId: string, passCode: string) {
+    const userData = await this.userRepository.getUserById(userId);
+    this._checkUser(userData, passCode);
+  }
+
+  private _checkUser(userData: User, passCode: string) {
     if (!userData) {
       throw new PassRecoverTokenInvalidException();
     }
@@ -46,6 +53,10 @@ export class PasswordChangeUseCase {
       console.log(userData.passResetExpire);
       console.log(new Date());
       throw new PassRecoverTokenExpireException();
+    }
+
+    if (userData.passResetToken !== passCode) {
+      throw new PassRecoverCodeMismatchException();
     }
   }
 }
