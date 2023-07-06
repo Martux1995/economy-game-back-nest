@@ -32,7 +32,11 @@ export class PasswordChangeUseCase {
   }
 
   private _decodeToken(token: string) {
-    return this.tokenService.verify(token);
+    const tokenData = this.tokenService.verify(token);
+    if (!tokenData) {
+      throw new PassRecoverTokenInvalidException();
+    }
+    return tokenData;
   }
 
   private async _checkUserPasswordRequest(userId: string, passCode: string) {

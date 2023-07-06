@@ -20,9 +20,13 @@ export class TokenServiceImp extends TokenService {
     });
   }
 
-  verify(token: string): TokenData {
-    return this.jwtService.verify<TokenData>(token, {
-      secret: this.envConfigService.getJwtSecret(),
-    });
+  verify(token: string): TokenData | null {
+    try {
+      return this.jwtService.verify<TokenData>(token, {
+        secret: this.envConfigService.getJwtSecret(),
+      });
+    } catch (e) {
+      return null;
+    }
   }
 }
