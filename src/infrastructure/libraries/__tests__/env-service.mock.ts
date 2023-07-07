@@ -1,4 +1,9 @@
 export const envMocks = {
+  getFrontDomain: {
+    varName: 'FRONT_DOMAIN',
+    varType: 'string',
+    varValue: 'URL del front',
+  },
   getDatabaseHost: {
     varName: 'DATABASE_HOST',
     varType: 'string',

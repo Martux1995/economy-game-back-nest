@@ -55,5 +55,15 @@ describe('EnvServiceImp', () => {
       expect(result).toBeDefined();
       expect(result).toEqual(payload);
     });
+
+    it('should return null if the token is valid', () => {
+      jest.spyOn(jwtService, 'verify').mockImplementation(() => {
+        throw new Error();
+      });
+
+      const result = tokenService.verify(tokenExample);
+
+      expect(result).toBeNull();
+    });
   });
 });
