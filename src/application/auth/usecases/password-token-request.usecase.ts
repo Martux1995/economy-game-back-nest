@@ -1,9 +1,18 @@
 import { add } from 'date-fns';
 import { Injectable } from '@nestjs/common';
+import { readFileSync } from 'fs';
 
 import { User } from '../../../domain/entities';
-import { EnvService, TokenService } from '../../../domain/services';
 import { UserRepository } from '../../../domain/repositories';
+import {
+  EnvService,
+  TokenService,
+  EmailService,
+} from '../../../domain/services';
+import {
+  RecoverPasswordHTMLTemplate,
+  SendMailParams,
+} from '../../../domain/types';
 
 import { generateRandomUUID } from '../../common/helpers/uuid';
 
@@ -12,12 +21,6 @@ import {
   UserDisabledException,
   UserNotFoundException,
 } from '../exceptions';
-import { EmailService } from '../../../domain/services/email.service';
-import {
-  RecoverPasswordHTMLTemplate,
-  SendMailParams,
-} from '../../../domain/types';
-import { readFileSync } from 'fs';
 
 @Injectable()
 export class PasswordTokenRequestUseCase {

@@ -1,7 +1,7 @@
 import { Module, Provider } from '@nestjs/common';
-import { EmailService } from '../../domain/services/email.service';
-import { EmailServiceImp } from './email.service';
+import { EmailService } from '../../domain/services';
 import { LibrariesModule } from '../libraries/libraries.module';
+import { EmailServiceImp } from './email.service';
 
 const EMAIL_PROVIDER: Provider[] = [
   {

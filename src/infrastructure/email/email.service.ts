@@ -1,15 +1,14 @@
-import Handlebars from 'handlebars';
-import { createTransport } from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
+import Handlebars from 'handlebars';
+import { Injectable } from '@nestjs/common';
+import { createTransport } from 'nodemailer';
 
-import { EnvService } from '../../domain/services';
-import { EmailService } from '../../domain/services/email.service';
+import { EnvService, EmailService } from '../../domain/services';
 import {
   SendMailAttachParam,
   SendMailHTMLContent,
   SendMailParams,
 } from '../../domain/types';
-import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class EmailServiceImp extends EmailService {
