@@ -9,6 +9,10 @@ export class EnvServiceImp extends EnvService {
     super();
   }
 
+  getFrontDomain(): string {
+    return this._checkVarExists<string>('FRONT_DOMAIN');
+  }
+
   getDatabaseHost(): string {
     return this._checkVarExists<string>('DATABASE_HOST');
   }

@@ -2,7 +2,7 @@ import { add } from 'date-fns';
 import { Injectable } from '@nestjs/common';
 
 import { User } from '../../../domain/entities';
-import { TokenService } from '../../../domain/services';
+import { EnvService, TokenService } from '../../../domain/services';
 import { UserRepository } from '../../../domain/repositories';
 
 import { generateRandomUUID } from '../../common/helpers/uuid';
@@ -12,29 +12,61 @@ import {
   UserDisabledException,
   UserNotFoundException,
 } from '../exceptions';
+import { EmailService } from '../../../domain/services/email.service';
+import {
+  RecoverPasswordHTMLTemplate,
+  SendMailParams,
+} from '../../../domain/types';
+import { readFileSync } from 'fs';
 
 @Injectable()
 export class PasswordTokenRequestUseCase {
   constructor(
     private readonly userRepository: UserRepository,
-    private tokenService: TokenService,
+    private readonly envService: EnvService,
+    private readonly tokenService: TokenService,
+    private readonly emailService: EmailService,
   ) {}
 
   async getToken(email: string): Promise<string> {
-    const userId = await this._checkUserAndReturnUserId(email);
+    const user = await this._checkUserAndReturnUserId(email);
 
     const passCode = generateRandomUUID();
     const expireDate = add(new Date(), { minutes: 10 });
-    await this.userRepository.setPassResetToken(userId, passCode, expireDate);
 
-    const token = this._generateToken(userId, passCode);
+    await this.userRepository.setPassResetToken(
+      user.userId,
+      passCode,
+      expireDate,
+    );
+
+    const token = this._generateToken(user.userId, passCode);
+
+    const emailData: SendMailParams<RecoverPasswordHTMLTemplate> = {
+      to: email,
+      subject: 'Reinicio de clave',
+      content: {
+        html: readFileSync(
+          `${__dirname}/../../../../../templates/email/recover-password.html`,
+          { encoding: 'utf-8' },
+        ),
+        params: {
+          playerName: `${user.firstName} ${user.lastName}`,
+          timeToExpire: '10 minutos',
+          recoverUrl: `${this.envService.getFrontDomain()}recover-password?token=${token}`,
+        },
+      },
+    };
+
+    await this.emailService.sendmail(emailData);
+
     return token;
   }
 
-  private async _checkUserAndReturnUserId(email: string): Promise<string> {
+  private async _checkUserAndReturnUserId(email: string): Promise<User> {
     const user = await this.userRepository.getUserByEmail(email);
     this._checkUser(user);
-    return user.userId;
+    return user;
   }
 
   private _checkUser(userData: User) {

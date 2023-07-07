@@ -1,4 +1,6 @@
 export abstract class EnvService {
+  abstract getFrontDomain(): string;
+
   abstract getDatabaseHost(): string;
   abstract getDatabasePort(): number;
   abstract getDatabaseUser(): string;
