@@ -73,12 +73,12 @@ export class AuthService {
     passTokenRequestDto: PassTokenRequestDto,
   ): Promise<AppResponse<any>> {
     const { email } = passTokenRequestDto;
-    const passCode = await this.passwordTokenRequestUseCase.getToken(email);
+
+    await this.passwordTokenRequestUseCase.getToken(email);
 
     return {
       ok: true,
       msg: 'Password change requested successfully. Check your email.',
-      passCode,
     };
   }
 

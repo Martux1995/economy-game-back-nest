@@ -31,7 +31,7 @@ export class PasswordTokenRequestUseCase {
     private readonly emailService: EmailService,
   ) {}
 
-  async getToken(email: string): Promise<string> {
+  async getToken(email: string): Promise<void> {
     const user = await this._checkUserAndReturnUserId(email);
 
     const passCode = generateRandomUUID();
@@ -62,8 +62,6 @@ export class PasswordTokenRequestUseCase {
     };
 
     await this.emailService.sendmail(emailData);
-
-    return token;
   }
 
   private async _checkUserAndReturnUserId(email: string): Promise<User> {
