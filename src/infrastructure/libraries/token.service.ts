@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { TokenData } from '../../domain/types/token-data';
+import { TokenData } from '../../domain/types';
 import { EnvService, TokenService } from '../../domain/services';
 
 @Injectable()

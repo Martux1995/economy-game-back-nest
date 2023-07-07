@@ -64,7 +64,7 @@ export class EmailServiceImp extends EmailService {
       return { text: content };
     } else {
       return {
-        html: Handlebars.compile(content.file)(content.params),
+        html: Handlebars.compile(content.html)(content.params),
       };
     }
   }

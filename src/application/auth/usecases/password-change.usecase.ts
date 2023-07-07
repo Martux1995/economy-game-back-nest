@@ -54,8 +54,6 @@ export class PasswordChangeUseCase {
     }
 
     if (userData.passResetToken && userData.passResetExpire < new Date()) {
-      console.log(userData.passResetExpire);
-      console.log(new Date());
       throw new PassRecoverTokenExpireException();
     }
 

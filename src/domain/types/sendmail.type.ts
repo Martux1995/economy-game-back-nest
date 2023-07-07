@@ -4,7 +4,7 @@ export type SendMailAttachParam = {
 };
 
 export type SendMailHTMLContent<T> = {
-  file: string;
+  html: string;
   params: T;
 };
 
