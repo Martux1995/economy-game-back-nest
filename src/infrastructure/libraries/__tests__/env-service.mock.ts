@@ -29,4 +29,29 @@ export const envMocks = {
     varType: 'string',
     varValue: 'secreto del jwt',
   },
+  getSMTPServer: {
+    varName: 'SMTP_SERVER',
+    varType: 'string',
+    varValue: 'nombre del server de correos',
+  },
+  getSMTPPort: {
+    varName: 'SMTP_PORT',
+    varType: 'number',
+    varValue: 80,
+  },
+  getSMTPUserMail: {
+    varName: 'SMTP_USER_MAIL',
+    varType: 'string',
+    varValue: 'mail del usuario de correos',
+  },
+  getSMTPUserName: {
+    varName: 'SMTP_USER_NAME',
+    varType: 'string',
+    varValue: 'nombre del usuario de correos',
+  },
+  getSMTPUserPassword: {
+    varName: 'SMTP_USER_PASS',
+    varType: 'string',
+    varValue: 'clave del usuario de correos',
+  },
 };

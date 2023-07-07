@@ -33,6 +33,26 @@ export class EnvServiceImp extends EnvService {
     return this._checkVarExists<string>('JWT_SECRET');
   }
 
+  getSMTPServer(): string {
+    return this._checkVarExists<string>('SMTP_SERVER');
+  }
+
+  getSMTPPort(): number {
+    return this._checkVarExists<number>('SMTP_PORT');
+  }
+
+  getSMTPUserMail(): string {
+    return this._checkVarExists<string>('SMTP_USER_MAIL');
+  }
+
+  getSMTPUserName(): string {
+    return this._checkVarExists<string>('SMTP_USER_NAME');
+  }
+
+  getSMTPUserPassword(): string {
+    return this._checkVarExists<string>('SMTP_USER_PASS');
+  }
+
   private _checkVarExists<T>(name: any): T {
     const envVar = this.configService.get<T>(name);
     if (!envVar) {
