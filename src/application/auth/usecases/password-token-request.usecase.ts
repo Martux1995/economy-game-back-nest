@@ -1,13 +1,14 @@
 import { add } from 'date-fns';
 import { Injectable } from '@nestjs/common';
-import { readFileSync } from 'fs';
 
 import { User } from '../../../domain/entities';
+import { EFileType } from '../../../domain/enums';
 import { UserRepository } from '../../../domain/repositories';
 import {
   EnvService,
   TokenService,
   EmailService,
+  FileSystemService,
 } from '../../../domain/services';
 import {
   RecoverPasswordHTMLTemplate,
@@ -29,6 +30,7 @@ export class PasswordTokenRequestUseCase {
     private readonly envService: EnvService,
     private readonly tokenService: TokenService,
     private readonly emailService: EmailService,
+    private readonly fileSystemService: FileSystemService,
   ) {}
 
   async getToken(email: string): Promise<void> {
@@ -49,9 +51,9 @@ export class PasswordTokenRequestUseCase {
       to: email,
       subject: 'Reinicio de clave',
       content: {
-        html: readFileSync(
-          `${__dirname}/../../../../../templates/email/recover-password.html`,
-          { encoding: 'utf-8' },
+        html: this.fileSystemService.getTextFile(
+          'recover-password.html',
+          EFileType.emailTemplate,
         ),
         params: {
           playerName: `${user.firstName} ${user.lastName}`,
