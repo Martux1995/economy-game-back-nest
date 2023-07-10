@@ -1,10 +1,16 @@
-import { Module, Provider } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
+import { Module, Provider } from '@nestjs/common';
+
+import {
+  EnvService,
+  FileSystemService,
+  TokenService,
+} from '../../domain/services';
 
 import { TokenServiceImp } from './token.service';
 import { EnvServiceImp } from './env.service';
-import { EnvService, TokenService } from '../../domain/services';
-import { JwtModule } from '@nestjs/jwt';
+import { FileSystemServiceImp } from './file-system.service';
 
 const EXTERNAL_LIBRARIES: Provider[] = [
   {
@@ -14,6 +20,10 @@ const EXTERNAL_LIBRARIES: Provider[] = [
   {
     provide: EnvService,
     useClass: EnvServiceImp,
+  },
+  {
+    provide: FileSystemService,
+    useClass: FileSystemServiceImp,
   },
 ];
 
