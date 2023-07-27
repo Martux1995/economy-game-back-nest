@@ -21,7 +21,7 @@ describe('LoginUseCase', () => {
   let sessionRepo: SessionRepository;
   let tokenService: TokenService;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     const module = await Test.createTestingModule({
       providers: [
         LoginUseCase,
@@ -48,12 +48,19 @@ describe('LoginUseCase', () => {
     userRepo = module.get<UserRepository>(UserRepository);
     sessionRepo = module.get<SessionRepository>(SessionRepository);
     tokenService = module.get<TokenService>(TokenService);
+
+    jest.spyOn(tokenService, 'sign').mockReturnValue('random-token');
   });
 
-  beforeEach(() => {
-    expect(module).toBeDefined();
+  afterEach(() => {
     jest.resetAllMocks();
-    jest.spyOn(tokenService, 'sign').mockReturnValue('random-token');
+  });
+
+  it('should be defined', () => {
+    expect(useCase).toBeDefined();
+    expect(userRepo).toBeDefined();
+    expect(sessionRepo).toBeDefined();
+    expect(tokenService).toBeDefined();
   });
 
   const { user, session } = loginUseCaseMock;
