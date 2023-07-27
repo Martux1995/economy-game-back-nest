@@ -1,14 +1,15 @@
 @domain = localhost:3000
 @token = token
+@recoverToken = token
 
 ### LOGIN 
 POST http://{{domain}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "asd@asd.com",
+  "email": "testing@economygame.com",
   //"personalNumberId": "11111111-1",
-  "password": "asdasd123"
+  "password": "this-is-a-password"
 }
 
 ### LOGOUT
@@ -39,6 +40,6 @@ POST http://{{domain}}/auth/password/change
 Content-Type: application/json
 
 {
-  "key": "token",
-  "newPassword": "asdAsd-123"
+  "key": "{{recoverToken}}",
+  "newPassword": "newPassword-123"
 }
