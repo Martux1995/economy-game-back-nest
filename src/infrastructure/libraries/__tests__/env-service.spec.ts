@@ -20,7 +20,7 @@ describe('EnvServiceImp', () => {
     expect(module).toBeDefined();
   });
 
-  describe.each(Object.keys(envMocks))('%s', (name) => {
+  describe.each(Object.keys(envMocks))('#%s', (name) => {
     const { varName, varType, varValue } = envMocks[name];
     it('should return the correct value.', () => {
       const getSpyOn = jest
@@ -40,10 +40,17 @@ describe('EnvServiceImp', () => {
         .spyOn(configService, 'get')
         .mockReturnValue(undefined);
 
-      expect(() => envService[name]()).toThrow(
-        Error(`No value setted for environment var '${varName}'.`),
-      );
-      expect(getSpyOn).toBeCalledWith(varName);
+      try {
+        envService[name]();
+      } catch (e) {
+        expect(e).toBeDefined();
+        expect(e.message).toContain(
+          `No value setted for environment var '${varName}'.`,
+        );
+        expect(getSpyOn).toBeCalledWith(varName);
+        return;
+      }
+      throw new Error();
     });
   });
 });
