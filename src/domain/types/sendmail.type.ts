@@ -9,7 +9,6 @@ export type SendMailHTMLContent<T> = {
 };
 
 export type SendMailParams<T = object> = {
-  from?: string;
   to: string | string[];
   cc?: string | string[];
   bcc?: string | string[];

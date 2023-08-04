@@ -71,7 +71,7 @@ export class AuthService {
 
   async requestPasswordRecovery(
     passTokenRequestDto: PassTokenRequestDto,
-  ): Promise<AppResponse<any>> {
+  ): Promise<AppResponse> {
     const { email } = passTokenRequestDto;
 
     await this.passwordTokenRequestUseCase.getToken(email);

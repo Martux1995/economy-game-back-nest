@@ -9,6 +9,6 @@ export const META_ROLES_VAR = 'rol';
 export const Auth = (...roles: ERoles[]) => {
   return applyDecorators(
     SetMetadata(META_ROLES_VAR, roles),
-    UseGuards(AuthGuard(), IsUserGuard),
+    UseGuards(AuthGuard('jwt'), IsUserGuard),
   );
 };

@@ -7,7 +7,7 @@ import {
 import { validateRUN } from '../../../application/common/helpers/run';
 
 @ValidatorConstraint({ name: 'isChileanRUN', async: false })
-class IsChileanRUNConstraint implements ValidatorConstraintInterface {
+export class IsChileanRUNConstraint implements ValidatorConstraintInterface {
   validate(value: any): boolean {
     return typeof value === 'string' && validateRUN(value);
   }
