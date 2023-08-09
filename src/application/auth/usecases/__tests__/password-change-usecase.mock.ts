@@ -1,5 +1,5 @@
 import { add, sub } from 'date-fns';
-import { User } from '../../../../domain/entities';
+import { User } from '../../../../domain/models';
 import { TokenData } from '../../../../domain/types';
 
 const passCode = 'random-password-code';

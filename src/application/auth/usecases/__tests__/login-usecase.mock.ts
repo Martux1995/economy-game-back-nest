@@ -1,4 +1,4 @@
-import { Session, User } from '../../../../domain/entities';
+import { Session, User } from '../../../../domain/models';
 import { LoginParams } from '../../params';
 
 const userDataMock: User = {

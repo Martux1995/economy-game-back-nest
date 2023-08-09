@@ -7,7 +7,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from '../../../domain/entities';
+import { User } from '../../../domain/models';
 
 import { ETableNames, EUserColumnNames } from '../enums';
 

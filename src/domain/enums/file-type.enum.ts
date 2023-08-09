@@ -1,3 +1,3 @@
 export enum EFileType {
-  emailTemplate = 'templates/email',
+  EmailTemplate = 'templates/email',
 }

@@ -1,7 +1,7 @@
 import { add } from 'date-fns';
 import { Injectable } from '@nestjs/common';
 
-import { User } from '../../../domain/entities';
+import { User } from '../../../domain/models';
 import { TokenService } from '../../../domain/services';
 import {
   SessionRepository,

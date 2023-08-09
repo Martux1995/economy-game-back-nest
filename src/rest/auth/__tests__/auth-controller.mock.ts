@@ -1,4 +1,4 @@
-import { ERoles } from '../../../domain/enums';
+import { EUserRoles } from '../../../domain/enums';
 import { UserSessionData } from '../../../domain/types';
 import { AppResponse } from '../../common/types';
 import { ChangePasswordDto, LoginDto, PassTokenRequestDto } from '../dtos';
@@ -20,7 +20,7 @@ const logoutParams: UserSessionData = {
   firstName: 'jaja',
   lastName: 'huehue',
   userId: 'sadas',
-  role: ERoles.Admin,
+  role: EUserRoles.Admin,
 };
 
 const logoutExpected: AppResponse = {
@@ -38,7 +38,7 @@ const renewTokenParams: UserSessionData = {
   firstName: 'jaja',
   lastName: 'huehue',
   userId: 'sadas',
-  role: ERoles.Admin,
+  role: EUserRoles.Admin,
 };
 
 const renewTokenExpected: AppResponse<{ token: string }> = {

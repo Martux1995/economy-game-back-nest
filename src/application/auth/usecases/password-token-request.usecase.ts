@@ -1,7 +1,7 @@
 import { add } from 'date-fns';
 import { Injectable } from '@nestjs/common';
 
-import { User } from '../../../domain/entities';
+import { User } from '../../../domain/models';
 import { EFileType } from '../../../domain/enums';
 import { UserRepository } from '../../../domain/repositories';
 import {
@@ -53,7 +53,7 @@ export class PasswordTokenRequestUseCase {
       content: {
         html: this.fileSystemService.getTextFile(
           'recover-password.html',
-          EFileType.emailTemplate,
+          EFileType.EmailTemplate,
         ),
         params: {
           playerName: `${user.firstName} ${user.lastName}`,

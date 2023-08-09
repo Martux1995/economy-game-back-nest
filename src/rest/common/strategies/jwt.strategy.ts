@@ -2,8 +2,8 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 
-import { ERoles } from '../../../domain/enums';
-import { Session } from '../../../domain/entities';
+import { EUserRoles } from '../../../domain/enums';
+import { Session } from '../../../domain/models';
 import { EnvService } from '../../../domain/services';
 import { SessionRepository } from '../../../domain/repositories';
 import { UserSessionData, TokenData } from '../../../domain/types';
@@ -32,7 +32,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       sessionKey: session.sessionId,
       firstName: session.user.firstName,
       lastName: session.user.lastName,
-      role: session.user.isAdmin ? ERoles.Admin : ERoles.User,
+      role: session.user.isAdmin ? EUserRoles.Admin : EUserRoles.User,
     };
   }
 

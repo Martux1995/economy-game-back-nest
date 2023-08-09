@@ -1,4 +1,4 @@
-import { User } from '../entities';
+import { User } from '../models';
 import { GetUserParams } from './params';
 
 export abstract class UserRepository {

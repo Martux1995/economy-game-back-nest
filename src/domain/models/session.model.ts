@@ -1,4 +1,4 @@
-import { User } from './user.entity';
+import { User } from './user.model';
 
 export interface Session {
   sessionId: string;

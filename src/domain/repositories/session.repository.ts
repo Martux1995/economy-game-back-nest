@@ -1,4 +1,4 @@
-import { Session } from '../entities';
+import { Session } from '../models';
 
 export abstract class SessionRepository {
   abstract getSession(sessionId: string, userId: string): Promise<Session>;

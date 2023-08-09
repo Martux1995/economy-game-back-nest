@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { Session } from '../../../domain/entities';
+import { Session } from '../../../domain/models';
 
 import { ESessionColumnNames, ETableNames } from '../enums';
 

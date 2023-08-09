@@ -6,7 +6,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 
-import { ERoles } from '../../../domain/enums';
+import { EUserRoles } from '../../../domain/enums';
 
 import { AppRequest } from '../types';
 import { META_ROLES_VAR } from '../decorators';
@@ -18,7 +18,7 @@ export class IsUserGuard extends AuthGuard('jwt') {
   }
 
   canActivate(context: ExecutionContext) {
-    const validRoles: ERoles[] = this.reflector.get(
+    const validRoles: EUserRoles[] = this.reflector.get(
       META_ROLES_VAR,
       context.getHandler(),
     );
@@ -27,7 +27,7 @@ export class IsUserGuard extends AuthGuard('jwt') {
   }
 
   private _checkRoles(
-    validRoles: ERoles[],
+    validRoles: EUserRoles[],
     context: ExecutionContext,
   ): boolean {
     if (!validRoles || validRoles.length === 0) {
@@ -40,6 +40,6 @@ export class IsUserGuard extends AuthGuard('jwt') {
       throw new BadRequestException('User Not Found');
     }
 
-    return validRoles.includes(ERoles.Admin) && user.role == 'ADMIN';
+    return validRoles.includes(EUserRoles.Admin) && user.role == 'ADMIN';
   }
 }

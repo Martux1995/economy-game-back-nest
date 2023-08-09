@@ -1,4 +1,4 @@
-import { Session } from '../../../../domain/entities';
+import { Session } from '../../../../domain/models';
 
 const sessionData: Session = {
   createdDate: new Date(2020, 1, 10),

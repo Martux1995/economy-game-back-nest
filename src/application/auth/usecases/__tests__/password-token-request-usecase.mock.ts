@@ -1,5 +1,5 @@
 import { add } from 'date-fns';
-import { User } from '../../../../domain/entities';
+import { User } from '../../../../domain/models';
 import { SendMailParams } from '../../../../domain/types';
 
 const validUser: User = {

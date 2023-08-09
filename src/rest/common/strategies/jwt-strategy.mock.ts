@@ -1,7 +1,7 @@
 import { add } from 'date-fns';
-import { Session } from '../../../domain/entities';
+import { Session } from '../../../domain/models';
 import { UserSessionData } from '../../../domain/types';
-import { ERoles } from '../../../domain/enums';
+import { EUserRoles } from '../../../domain/enums';
 
 const params = {
   key: 'asdas',
@@ -31,7 +31,7 @@ const adminSessionData: Session = {
 const expectedAdmin: UserSessionData = {
   firstName: 'name',
   lastName: 'last',
-  role: ERoles.Admin,
+  role: EUserRoles.Admin,
   sessionKey: 'asdasd123',
   userId: '12345',
 };
@@ -59,7 +59,7 @@ const userSessionData: Session = {
 const expectedUser: UserSessionData = {
   firstName: 'name',
   lastName: 'last',
-  role: ERoles.User,
+  role: EUserRoles.User,
   sessionKey: 'asdasd123',
   userId: '12345',
 };
