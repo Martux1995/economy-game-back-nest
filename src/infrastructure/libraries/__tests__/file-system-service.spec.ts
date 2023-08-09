@@ -27,13 +27,13 @@ describe('FileSystemServiceImp', () => {
 
       const result = fileSystemService.getRawFile(
         'name',
-        EFileType.emailTemplate,
+        EFileType.EmailTemplate,
       );
 
       expect(result).toBeDefined();
       expect(result).toStrictEqual<Buffer>(Buffer.alloc(100));
       expect(existsSpyOn).toBeCalledWith(
-        join(process.cwd(), `./${EFileType.emailTemplate}/name`),
+        join(process.cwd(), `./${EFileType.EmailTemplate}/name`),
       );
     });
 
@@ -42,12 +42,12 @@ describe('FileSystemServiceImp', () => {
 
       const result = fileSystemService.getRawFile(
         'name',
-        EFileType.emailTemplate,
+        EFileType.EmailTemplate,
       );
 
       expect(result).toBeNull();
       expect(existsSpyOn).toBeCalledWith(
-        join(process.cwd(), `./${EFileType.emailTemplate}/name`),
+        join(process.cwd(), `./${EFileType.EmailTemplate}/name`),
       );
     });
   });
@@ -61,13 +61,13 @@ describe('FileSystemServiceImp', () => {
 
       const result = fileSystemService.getTextFile(
         'name',
-        EFileType.emailTemplate,
+        EFileType.EmailTemplate,
       );
 
       expect(result).toBeDefined();
       expect(result).toStrictEqual<Buffer>(Buffer.alloc(100));
       expect(existsSpyOn).toBeCalledWith(
-        join(process.cwd(), `./${EFileType.emailTemplate}/name`),
+        join(process.cwd(), `./${EFileType.EmailTemplate}/name`),
       );
     });
 
@@ -76,12 +76,12 @@ describe('FileSystemServiceImp', () => {
 
       const result = fileSystemService.getTextFile(
         'name',
-        EFileType.emailTemplate,
+        EFileType.EmailTemplate,
       );
 
       expect(result).toBeNull();
       expect(existsSpyOn).toBeCalledWith(
-        join(process.cwd(), `./${EFileType.emailTemplate}/name`),
+        join(process.cwd(), `./${EFileType.EmailTemplate}/name`),
       );
     });
   });

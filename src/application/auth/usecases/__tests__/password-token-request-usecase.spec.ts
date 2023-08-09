@@ -110,7 +110,7 @@ describe('PasswordTokenRequestUseCase', () => {
     );
     expect(getFileSpyOn).toBeCalledWith(
       'recover-password.html',
-      EFileType.emailTemplate,
+      EFileType.EmailTemplate,
     );
     expect(sendMailSpyOn).toBeCalledWith(
       sendMailMock(validUser, 'file-content', 'local', 'random-token'),
