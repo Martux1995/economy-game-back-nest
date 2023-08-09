@@ -1,17 +1,22 @@
-import { DataSource, Not } from 'typeorm';
 import { Injectable } from '@nestjs/common';
+import { Not, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import { SessionRepository } from '../../../domain/repositories';
+
 import { SessionEntity } from '../entities';
 
 @Injectable()
 export class SessionRepositoryImp extends SessionRepository {
-  constructor(private readonly dataSource: DataSource) {
+  constructor(
+    @InjectRepository(SessionEntity)
+    private readonly sessionRepository: Repository<SessionEntity>,
+  ) {
     super();
   }
 
   async getSession(sessionId: string, userId: string): Promise<SessionEntity> {
-    return this.dataSource.getRepository(SessionEntity).findOne({
+    return this.sessionRepository.findOne({
       relations: { user: true },
       where: {
         user: { userId },
@@ -24,17 +29,14 @@ export class SessionRepositoryImp extends SessionRepository {
     userId: string,
     expiredDate: Date,
   ): Promise<SessionEntity> {
-    return this.dataSource
-      .getRepository(SessionEntity)
-      .create({
-        user: { userId },
-        expiredDate,
-      })
-      .save();
+    return this.sessionRepository.save({
+      user: { userId },
+      expiredDate,
+    });
   }
 
   async deleteSession(sessionId: string): Promise<void> {
-    await this.dataSource.getRepository(SessionEntity).delete({
+    await this.sessionRepository.delete({
       sessionId,
     });
   }
@@ -43,7 +45,7 @@ export class SessionRepositoryImp extends SessionRepository {
     userId: string,
     exceptionSessionId?: string,
   ): Promise<void> {
-    await this.dataSource.getRepository(SessionEntity).delete({
+    await this.sessionRepository.delete({
       user: { userId },
       sessionId: exceptionSessionId && Not(exceptionSessionId),
     });
