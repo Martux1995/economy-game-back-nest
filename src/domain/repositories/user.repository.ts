@@ -1,9 +1,8 @@
 import { User } from '../entities';
+import { GetUserParams } from './params';
 
 export abstract class UserRepository {
-  abstract getUserById(userId: string): Promise<User>;
-  abstract getUserByEmail(email: string): Promise<User>;
-  abstract getUserByPersonalNumber(personalNumberId: string): Promise<User>;
+  abstract getUser(params: GetUserParams): Promise<User>;
 
   abstract setPassResetToken(
     userId: string,

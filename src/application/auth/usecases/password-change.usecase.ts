@@ -40,7 +40,7 @@ export class PasswordChangeUseCase {
   }
 
   private async _checkUserPasswordRequest(userId: string, passCode: string) {
-    const userData = await this.userRepository.getUserById(userId);
+    const userData = await this.userRepository.getUser({ userId });
     this._checkUser(userData, passCode);
   }
 

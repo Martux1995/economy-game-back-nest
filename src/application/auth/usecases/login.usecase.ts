@@ -27,7 +27,7 @@ export class LoginUseCase {
 
     const userData: User = await this._getUserData(
       email,
-      formatRUN(personalNumber),
+      formatRUN(personalNumber, false),
     );
 
     if (!userData || !comparePassword(password, userData.passHash)) {
@@ -40,14 +40,12 @@ export class LoginUseCase {
 
   private async _getUserData(
     email: string,
-    personalNumber: string,
+    personalNumberId: string,
   ): Promise<User> {
-    if (email) {
-      return this.userRepository.getUserByEmail(email);
-    } else if (personalNumber) {
-      return this.userRepository.getUserByPersonalNumber(personalNumber);
-    }
-    return null;
+    return this.userRepository.getUser({
+      email,
+      personalNumberId,
+    });
   }
 
   private async _generateSession(userId: string) {

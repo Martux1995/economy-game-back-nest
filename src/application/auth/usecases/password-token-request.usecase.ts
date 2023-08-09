@@ -67,7 +67,7 @@ export class PasswordTokenRequestUseCase {
   }
 
   private async _checkUserAndReturnUserId(email: string): Promise<User> {
-    const user = await this.userRepository.getUserByEmail(email);
+    const user = await this.userRepository.getUser({ email });
     this._checkUser(user);
     return user;
   }
