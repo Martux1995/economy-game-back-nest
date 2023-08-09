@@ -28,7 +28,7 @@ describe('PasswordChangeUseCase', () => {
           useFactory: () => ({
             setPassHash: jest.fn(),
             removePassResetToken: jest.fn(),
-            getUserById: jest.fn(),
+            getUser: jest.fn(),
           }),
         },
         {
@@ -59,16 +59,14 @@ describe('PasswordChangeUseCase', () => {
   it('should change the user password without errors', async () => {
     jest.spyOn(tokenService, 'verify').mockReturnValue(tokenData);
     const getUserSpyOn = jest
-      .spyOn(userRepo, 'getUserById')
+      .spyOn(userRepo, 'getUser')
       .mockResolvedValue(cases.validUser);
     const setPassHashSpyOn = jest.spyOn(userRepo, 'setPassHash');
     const removePassTokenSpyOn = jest.spyOn(userRepo, 'removePassResetToken');
 
-    await expect(
-      useCase.changePassword(params.token, params.password),
-    ).resolves.not.toThrowError();
+    await useCase.changePassword(params.token, params.password);
 
-    expect(getUserSpyOn).toBeCalledWith(tokenData.userId);
+    expect(getUserSpyOn).toBeCalledWith({ userId: tokenData.userId });
     expect(setPassHashSpyOn).toBeCalledWith(tokenData.userId, 'test-password');
     expect(removePassTokenSpyOn).toBeCalledWith(tokenData.userId);
   });
@@ -76,60 +74,81 @@ describe('PasswordChangeUseCase', () => {
   it('should throw an error if the passResetToken has expired', async () => {
     jest.spyOn(tokenService, 'verify').mockReturnValue(tokenData);
     const getUserSpyOn = jest
-      .spyOn(userRepo, 'getUserById')
+      .spyOn(userRepo, 'getUser')
       .mockResolvedValue(cases.expiredResetTokenUser);
 
-    await expect(
-      useCase.changePassword(params.token, params.password),
-    ).rejects.toThrow(PassRecoverTokenExpireException);
-
-    expect(getUserSpyOn).toBeCalledWith(tokenData.userId);
+    try {
+      await useCase.changePassword(params.token, params.password);
+    } catch (e) {
+      expect(e).toBeDefined();
+      expect(e).toEqual(new PassRecoverTokenExpireException());
+      expect(getUserSpyOn).toBeCalledWith({ userId: tokenData.userId });
+      return;
+    }
+    throw new Error();
   });
 
   it('should throw an error if the passResetToken is not the same', async () => {
     jest.spyOn(tokenService, 'verify').mockReturnValue(tokenData);
     const getUserSpyOn = jest
-      .spyOn(userRepo, 'getUserById')
+      .spyOn(userRepo, 'getUser')
       .mockResolvedValue(cases.tokenNotEqualUser);
 
-    await expect(
-      useCase.changePassword(params.token, params.password),
-    ).rejects.toThrow(PassRecoverCodeMismatchException);
-
-    expect(getUserSpyOn).toBeCalledWith(tokenData.userId);
+    try {
+      await useCase.changePassword(params.token, params.password);
+    } catch (e) {
+      expect(e).toBeDefined();
+      expect(e).toEqual(new PassRecoverCodeMismatchException());
+      expect(getUserSpyOn).toBeCalledWith({ userId: tokenData.userId });
+      return;
+    }
+    throw new Error();
   });
 
   it('should throw an error if user is disabled', async () => {
     jest.spyOn(tokenService, 'verify').mockReturnValue(tokenData);
     const getUserSpyOn = jest
-      .spyOn(userRepo, 'getUserById')
+      .spyOn(userRepo, 'getUser')
       .mockResolvedValue(cases.disabledUser);
 
-    await expect(
-      useCase.changePassword(params.token, params.password),
-    ).rejects.toThrow(UserDisabledException);
-
-    expect(getUserSpyOn).toBeCalledWith(tokenData.userId);
+    try {
+      await useCase.changePassword(params.token, params.password);
+    } catch (e) {
+      expect(e).toBeDefined();
+      expect(e).toEqual(new UserDisabledException());
+      expect(getUserSpyOn).toBeCalledWith({ userId: tokenData.userId });
+      return;
+    }
+    throw new Error();
   });
 
   it('should throw an error if user not exists', async () => {
     jest.spyOn(tokenService, 'verify').mockReturnValue(tokenData);
     const getUserSpyOn = jest
-      .spyOn(userRepo, 'getUserById')
+      .spyOn(userRepo, 'getUser')
       .mockResolvedValue(null);
 
-    await expect(
-      useCase.changePassword(params.token, params.password),
-    ).rejects.toThrow(PassRecoverTokenInvalidException);
-
-    expect(getUserSpyOn).toBeCalledWith(tokenData.userId);
+    try {
+      await useCase.changePassword(params.token, params.password);
+    } catch (e) {
+      expect(e).toBeDefined();
+      expect(e).toEqual(new PassRecoverTokenInvalidException());
+      expect(getUserSpyOn).toBeCalledWith({ userId: tokenData.userId });
+      return;
+    }
+    throw new Error();
   });
 
   it('should throw an error if token is invalid', async () => {
     jest.spyOn(tokenService, 'verify').mockReturnValue(null);
 
-    await expect(
-      useCase.changePassword(params.token, params.password),
-    ).rejects.toThrow(PassRecoverTokenInvalidException);
+    try {
+      await useCase.changePassword(params.token, params.password);
+    } catch (e) {
+      expect(e).toBeDefined();
+      expect(e).toEqual(new PassRecoverTokenInvalidException());
+      return;
+    }
+    throw new Error();
   });
 });

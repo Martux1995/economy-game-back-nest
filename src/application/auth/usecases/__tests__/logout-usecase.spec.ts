@@ -27,12 +27,12 @@ describe('LogoutUseCase', () => {
     expect(module).toBeDefined();
   });
 
-  it('should not to trown an error if session key was deleted successfully', async () => {
+  it('should delete session when the user logout', async () => {
     const { sessionId } = logoutUseCaseMock.data;
 
     const deleteSessionSpyOn = jest.spyOn(repo, 'deleteSession');
 
-    expect(() => useCase.logout(sessionId)).not.toThrow();
+    await useCase.logout(sessionId);
     expect(deleteSessionSpyOn).toHaveBeenCalledWith(sessionId);
   });
 });

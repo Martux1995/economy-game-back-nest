@@ -6,6 +6,7 @@ import {
   EmailService,
   FileSystemService,
 } from '../../../../domain/services';
+import { EFileType } from '../../../../domain/enums';
 import { UserRepository } from '../../../../domain/repositories';
 
 import * as UUIDHelper from '../../../common/helpers/uuid';
@@ -19,7 +20,6 @@ import {
 import { PasswordTokenRequestUseCase } from '../password-token-request.usecase';
 
 import { passwordRequestTokenMock } from './password-token-request-usecase.mock';
-import { EFileType } from '../../../../domain/enums';
 
 describe('PasswordTokenRequestUseCase', () => {
   let useCase: PasswordTokenRequestUseCase;
@@ -37,7 +37,7 @@ describe('PasswordTokenRequestUseCase', () => {
           provide: UserRepository,
           useFactory: () => ({
             setPassResetToken: jest.fn(),
-            getUserByEmail: jest.fn(),
+            getUser: jest.fn(),
           }),
         },
         {
@@ -91,7 +91,7 @@ describe('PasswordTokenRequestUseCase', () => {
 
   it('should generate a recover token', async () => {
     const getUserSpyOn = jest
-      .spyOn(userRepo, 'getUserByEmail')
+      .spyOn(userRepo, 'getUser')
       .mockResolvedValue(validUser);
     const setPassResetTokenSpyOn = jest.spyOn(userRepo, 'setPassResetToken');
     const getFileSpyOn = jest
@@ -101,8 +101,8 @@ describe('PasswordTokenRequestUseCase', () => {
       .spyOn(emailService, 'sendmail')
       .mockResolvedValue();
 
-    await expect(useCase.getToken(email)).resolves.not.toThrowError();
-    expect(getUserSpyOn).toBeCalledWith(email);
+    await useCase.getToken(email);
+    expect(getUserSpyOn).toBeCalledWith({ email });
     expect(setPassResetTokenSpyOn).toBeCalledWith(
       validUser.userId,
       'random-uuid',
@@ -117,36 +117,51 @@ describe('PasswordTokenRequestUseCase', () => {
     );
   });
 
-  it('should thrown an error if the user has another request available', () => {
+  it('should thrown an error if the user has another request available', async () => {
     const getUserSpyOn = jest
-      .spyOn(userRepo, 'getUserByEmail')
+      .spyOn(userRepo, 'getUser')
       .mockResolvedValue(userWithToken);
 
-    expect(() => useCase.getToken(email)).rejects.toThrowError(
-      PassRecoverTokenActiveException,
-    );
-    expect(getUserSpyOn).toBeCalledWith(email);
+    try {
+      await useCase.getToken(email);
+    } catch (e) {
+      expect(e).toBeDefined();
+      expect(e).toEqual(new PassRecoverTokenActiveException());
+      expect(getUserSpyOn).toBeCalledWith({ email });
+      return;
+    }
+    throw new Error();
   });
 
-  it('should thrown an error if the user is disabled', () => {
+  it('should thrown an error if the user is disabled', async () => {
     const getUserSpyOn = jest
-      .spyOn(userRepo, 'getUserByEmail')
+      .spyOn(userRepo, 'getUser')
       .mockResolvedValue(userDisabled);
 
-    expect(() => useCase.getToken(email)).rejects.toThrowError(
-      UserDisabledException,
-    );
-    expect(getUserSpyOn).toBeCalledWith(email);
+    try {
+      await useCase.getToken(email);
+    } catch (e) {
+      expect(e).toBeDefined();
+      expect(e).toEqual(new UserDisabledException());
+      expect(getUserSpyOn).toBeCalledWith({ email });
+      return;
+    }
+    throw new Error();
   });
 
-  it('should thrown an error if the user does not exists', () => {
+  it('should thrown an error if the user does not exists', async () => {
     const getUserSpyOn = jest
-      .spyOn(userRepo, 'getUserByEmail')
+      .spyOn(userRepo, 'getUser')
       .mockResolvedValue(null);
 
-    expect(() => useCase.getToken(email)).rejects.toThrowError(
-      UserNotFoundException,
-    );
-    expect(getUserSpyOn).toBeCalledWith(email);
+    try {
+      await useCase.getToken(email);
+    } catch (e) {
+      expect(e).toBeDefined();
+      expect(e).toEqual(new UserNotFoundException());
+      expect(getUserSpyOn).toBeCalledWith({ email });
+      return;
+    }
+    throw new Error();
   });
 });

@@ -9,8 +9,6 @@ import {
 import * as runHelpers from '../../../common/helpers/run';
 import * as passwordHelpers from '../../../common/helpers/password';
 
-import { LoginNotFoundException } from '../../exceptions';
-
 import { LoginUseCase } from '../login.usecase';
 
 import { loginUseCaseMock } from './login-usecase.mock';
@@ -29,8 +27,7 @@ describe('LoginUseCase', () => {
           provide: UserRepository,
           useFactory: () => ({
             removePassResetToken: jest.fn(),
-            getUserByEmail: jest.fn(),
-            getUserByPersonalNumber: jest.fn(),
+            getUser: jest.fn(),
           }),
         },
         {
@@ -69,8 +66,8 @@ describe('LoginUseCase', () => {
 
     it('should return a token if the the user email and his password are valid', async () => {
       jest.spyOn(passwordHelpers, 'comparePassword').mockReturnValue(true);
-      const getUserDataByEmailSpyOn = jest
-        .spyOn(userRepo, 'getUserByEmail')
+      const getUserSpyOn = jest
+        .spyOn(userRepo, 'getUser')
         .mockResolvedValue(user);
       const removePassResetTokenSpyOn = jest.spyOn(
         userRepo,
@@ -84,7 +81,10 @@ describe('LoginUseCase', () => {
 
       expect(result).toBeDefined();
       expect(result).toEqual('random-token');
-      expect(getUserDataByEmailSpyOn).toBeCalledWith(correct.email);
+      expect(getUserSpyOn).toBeCalledWith({
+        email: correct.email,
+        personalNumberId: null,
+      });
       expect(removePassResetTokenSpyOn).toBeCalledWith(user.userId);
       expect(registerSessionDataSpyOn).toBeCalledWith(
         user.userId,
@@ -94,25 +94,41 @@ describe('LoginUseCase', () => {
 
     it('should throw an error if the user email exists but the password is wrong', async () => {
       jest.spyOn(passwordHelpers, 'comparePassword').mockReturnValue(false);
-      const getUserDataByEmailSpyOn = jest
-        .spyOn(userRepo, 'getUserByEmail')
+      const getUserSpyOn = jest
+        .spyOn(userRepo, 'getUser')
         .mockResolvedValue(user);
 
-      await expect(async () => useCase.login(wrongPass)).rejects.toThrow(
-        LoginNotFoundException,
-      );
-      expect(getUserDataByEmailSpyOn).toBeCalledWith(wrongPass.email);
+      try {
+        await useCase.login(wrongPass);
+      } catch (e) {
+        expect(e).toBeDefined();
+        expect(e.message).toContain('Los datos ingresados son incorrectos');
+        expect(getUserSpyOn).toBeCalledWith({
+          email: wrongPass.email,
+          personalNumberId: null,
+        });
+        return;
+      }
+      throw new Error();
     });
 
     it('should throw an error if the user email does not exists', async () => {
-      const getUserDataByEmailSpyOn = jest
-        .spyOn(userRepo, 'getUserByEmail')
+      const getUserSpyOn = jest
+        .spyOn(userRepo, 'getUser')
         .mockResolvedValue(null);
 
-      await expect(async () => useCase.login(wrongEmail)).rejects.toThrow(
-        LoginNotFoundException,
-      );
-      expect(getUserDataByEmailSpyOn).toBeCalledWith(wrongEmail.email);
+      try {
+        await useCase.login(wrongEmail);
+      } catch (e) {
+        expect(e).toBeDefined();
+        expect(e.message).toContain('Los datos ingresados son incorrectos');
+        expect(getUserSpyOn).toBeCalledWith({
+          email: wrongEmail.email,
+          personalNumberId: null,
+        });
+        return;
+      }
+      throw new Error();
     });
   });
 
@@ -123,8 +139,8 @@ describe('LoginUseCase', () => {
       jest
         .spyOn(runHelpers, 'formatRUN')
         .mockReturnValue(correct.personalNumber.replace('.', ''));
-      const getUserDataByPersonalNumberSpyOn = jest
-        .spyOn(userRepo, 'getUserByPersonalNumber')
+      const getUserSpyOn = jest
+        .spyOn(userRepo, 'getUser')
         .mockResolvedValue(user);
       const removePassResetTokenSpyOn = jest.spyOn(
         userRepo,
@@ -138,9 +154,10 @@ describe('LoginUseCase', () => {
 
       expect(result).toBeDefined();
       expect(result).toEqual('random-token');
-      expect(getUserDataByPersonalNumberSpyOn).toBeCalledWith(
-        correct.personalNumber.replace('.', ''),
-      );
+      expect(getUserSpyOn).toBeCalledWith({
+        email: undefined,
+        personalNumberId: correct.personalNumber.replace('.', ''),
+      });
       expect(removePassResetTokenSpyOn).toBeCalledWith(user.userId);
       expect(registerSessionDataSpyOn).toBeCalledWith(
         user.userId,
@@ -153,32 +170,44 @@ describe('LoginUseCase', () => {
         .spyOn(runHelpers, 'formatRUN')
         .mockReturnValue(wrongPass.personalNumber.replace('.', ''));
       jest.spyOn(passwordHelpers, 'comparePassword').mockReturnValue(false);
-      const getUserDataByPersonalNumberSpyOn = jest
-        .spyOn(userRepo, 'getUserByPersonalNumber')
+      const getUserSpyOn = jest
+        .spyOn(userRepo, 'getUser')
         .mockResolvedValue(user);
 
-      await expect(async () => useCase.login(wrongPass)).rejects.toThrow(
-        LoginNotFoundException,
-      );
-      expect(getUserDataByPersonalNumberSpyOn).toBeCalledWith(
-        wrongPass.personalNumber.replace('.', ''),
-      );
+      try {
+        await useCase.login(wrongPass);
+      } catch (e) {
+        expect(e).toBeDefined();
+        expect(e.message).toContain('Los datos ingresados son incorrectos');
+        expect(getUserSpyOn).toBeCalledWith({
+          email: undefined,
+          personalNumberId: wrongPass.personalNumber.replace('.', ''),
+        });
+        return;
+      }
+      throw new Error();
     });
 
     it('should throw an error if the user personal ID does not exists', async () => {
       jest
         .spyOn(runHelpers, 'formatRUN')
         .mockReturnValue(wrongPersonalId.personalNumber.replace('.', ''));
-      const getUserDataByPersonalNumberSpyOn = jest
-        .spyOn(userRepo, 'getUserByPersonalNumber')
+      const getUserSpyOn = jest
+        .spyOn(userRepo, 'getUser')
         .mockResolvedValue(null);
 
-      await expect(async () => useCase.login(wrongPersonalId)).rejects.toThrow(
-        LoginNotFoundException,
-      );
-      expect(getUserDataByPersonalNumberSpyOn).toBeCalledWith(
-        wrongPersonalId.personalNumber.replace('.', ''),
-      );
+      try {
+        await useCase.login(wrongPersonalId);
+      } catch (e) {
+        expect(e).toBeDefined();
+        expect(e.message).toContain('Los datos ingresados son incorrectos');
+        expect(getUserSpyOn).toBeCalledWith({
+          email: undefined,
+          personalNumberId: wrongPersonalId.personalNumber.replace('.', ''),
+        });
+        return;
+      }
+      throw new Error();
     });
   });
 
@@ -186,9 +215,14 @@ describe('LoginUseCase', () => {
     jest.spyOn(runHelpers, 'formatRUN').mockReturnValue(null);
     const { none } = loginUseCaseMock;
     it('should throw an error if no email or personal ID are present', async () => {
-      await expect(async () => useCase.login(none)).rejects.toThrow(
-        LoginNotFoundException,
-      );
+      try {
+        await useCase.login(none);
+      } catch (e) {
+        expect(e).toBeDefined();
+        expect(e.message).toContain('Los datos ingresados son incorrectos');
+        return;
+      }
+      throw new Error();
     });
   });
 });

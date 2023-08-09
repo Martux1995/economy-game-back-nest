@@ -28,7 +28,7 @@ export class RenewTokenUseCase {
     const session = await this.sessionRepository.getSession(sessionId, userId);
 
     if (!session) {
-      throw new SessionNotFoundException('Session not found');
+      throw new SessionNotFoundException('Session not found.');
     }
 
     if (session.expiredDate < new Date()) {

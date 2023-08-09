@@ -4,10 +4,6 @@ import { TokenService } from '../../../../domain/services';
 
 import { RenewTokenUseCase } from '../renew-token.usecase';
 import { renewTokenUseCaseMock } from './renew-token-usecase.mock';
-import {
-  SessionExpiredException,
-  SessionNotFoundException,
-} from '../../exceptions';
 
 describe('RenewTokenUseCase', () => {
   let useCase: RenewTokenUseCase;
@@ -75,10 +71,15 @@ describe('RenewTokenUseCase', () => {
       .spyOn(repo, 'getSession')
       .mockResolvedValue(expiredSessionData);
 
-    await expect(async () =>
-      useCase.renewToken(userId, oldSessionId),
-    ).rejects.toThrow(SessionExpiredException);
-    expect(getSessionSpyOn).toBeCalledWith(oldSessionId, userId);
+    try {
+      await useCase.renewToken(userId, oldSessionId);
+    } catch (e) {
+      expect(e).toBeDefined();
+      expect(e.message).toContain('Session expired. Please login again.');
+      expect(getSessionSpyOn).toBeCalledWith(oldSessionId, userId);
+      return;
+    }
+    throw new Error();
   });
 
   it('should thrown an error if session not found in the DB', async () => {
@@ -88,9 +89,14 @@ describe('RenewTokenUseCase', () => {
       .spyOn(repo, 'getSession')
       .mockResolvedValue(null);
 
-    await expect(async () =>
-      useCase.renewToken(userId, oldSessionId),
-    ).rejects.toThrow(SessionNotFoundException);
-    expect(getSessionSpyOn).toBeCalledWith(oldSessionId, userId);
+    try {
+      await useCase.renewToken(userId, oldSessionId);
+    } catch (e) {
+      expect(e).toBeDefined();
+      expect(e.message).toContain('Session not found.');
+      expect(getSessionSpyOn).toBeCalledWith(oldSessionId, userId);
+      return;
+    }
+    throw new Error();
   });
 });
