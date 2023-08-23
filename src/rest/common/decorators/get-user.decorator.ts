@@ -5,16 +5,14 @@ import {
 } from '@nestjs/common';
 import { AppRequest } from '../types';
 
-export const GetUser = createParamDecorator(
-  (param: string, ctx: ExecutionContext) => {
-    const user = ctx.switchToHttp().getRequest<AppRequest>().user;
+export const getUserFromRequestFn = (_param: string, ctx: ExecutionContext) => {
+  const user = ctx.switchToHttp().getRequest<AppRequest>().user;
 
-    if (!user) {
-      throw new InternalServerErrorException(
-        'User not found (Decorator error)',
-      );
-    }
+  if (!user) {
+    throw new InternalServerErrorException('User not found (Decorator error)');
+  }
 
-    return user;
-  },
-);
+  return user;
+};
+
+export const GetUser = createParamDecorator(getUserFromRequestFn);
