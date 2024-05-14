@@ -81,6 +81,7 @@
     ],
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
+    "maxWorkers": 2,
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
