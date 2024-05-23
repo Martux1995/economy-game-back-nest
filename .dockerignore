@@ -1,0 +1,11 @@
+./.git
+./.gitignore
+
+./node_modules
+./postgres
+./dist
+./coverage
+./http
+
+./.env
+./template.env

@@ -1,7 +1,36 @@
-version: '3'
-
 services:
-  database:
+  principal_app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT}
+      FRONT_DOMAIN: ${FRONT_DOMAIN}
+      DATABASE_HOST: economy-database
+      DATABASE_PORT: 5432
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASS: ${DATABASE_PASS}
+      DATABASE_NAME: ${DATABASE_NAME}
+      JWT_SECRET: ${JWT_SECRET}
+      SMTP_SERVER: ${SMTP_SERVER}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USER_MAIL: ${SMTP_USER_MAIL}
+      SMTP_USER_NAME: ${SMTP_USER_NAME}
+      SMTP_USER_PASS: ${SMTP_USER_PASS}
+    depends_on:
+      - economy-database
+    links:
+      - economy-database
+    deploy:
+      resources:
+        limits:
+          cpus: "0.15"
+          memory: 1024M
+        reservations:
+          cpus: "0.1"
+          memory: 512M
+
+  economy-database:
     image: postgres:14.3
     restart: always
     ports:
@@ -15,3 +44,11 @@ services:
     container_name: economy-game-db
     volumes:
       - ./postgres:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: "0.15"
+          memory: 512M
+        reservations:
+          cpus: "0.1"
+          memory: 200M
