@@ -4,13 +4,11 @@ import { Module, Provider } from '@nestjs/common';
 
 import {
   EnvService,
-  FileSystemService,
   TokenService,
 } from '../../domain/services';
 
 import { TokenServiceImp } from './token.service';
 import { EnvServiceImp } from './env.service';
-import { FileSystemServiceImp } from './file-system.service';
 
 const EXTERNAL_LIBRARIES: Provider[] = [
   {
@@ -20,10 +18,6 @@ const EXTERNAL_LIBRARIES: Provider[] = [
   {
     provide: EnvService,
     useClass: EnvServiceImp,
-  },
-  {
-    provide: FileSystemService,
-    useClass: FileSystemServiceImp,
   },
 ];
 
