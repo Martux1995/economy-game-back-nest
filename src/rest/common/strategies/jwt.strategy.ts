@@ -1,16 +1,19 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 
-import { EUserRoles } from '../../../domain/enums';
 import { Session } from '../../../domain/models';
-import { EnvService } from '../../../domain/services';
-import { SessionRepository } from '../../../domain/repositories';
+import { EUserRoles } from '../../../domain/enums';
+import {
+  SESSION_REPOSITORY,
+  SessionRepository,
+} from '../../../domain/repositories';
 import { UserSessionData, TokenData } from '../../../domain/types';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
+    @Inject(SESSION_REPOSITORY)
     private readonly sessionRepository: SessionRepository,
     configService: EnvService,
   ) {

@@ -7,13 +7,11 @@ import { SessionRepository } from '../../../domain/repositories';
 import { SessionEntity } from '../entities';
 
 @Injectable()
-export class SessionRepositoryImp extends SessionRepository {
+export class SessionRepositoryImp implements SessionRepository {
   constructor(
     @InjectRepository(SessionEntity)
     private readonly sessionRepository: Repository<SessionEntity>,
-  ) {
-    super();
-  }
+  ) {}
 
   async getSession(sessionId: string, userId: string): Promise<SessionEntity> {
     return this.sessionRepository.findOne({

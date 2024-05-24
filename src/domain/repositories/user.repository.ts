@@ -1,14 +1,12 @@
 import { User } from '../models';
 import { GetUserParams } from './params';
 
-export abstract class UserRepository {
-  abstract getUser(params: GetUserParams): Promise<User>;
+export interface UserRepository {
+  getUser(params: GetUserParams): Promise<User>;
 
-  abstract setPassResetToken(
-    userId: string,
-    token: string,
-    expire: Date,
-  ): Promise<void>;
-  abstract setPassHash(userId: string, passHash: string): Promise<void>;
-  abstract removePassResetToken(userId: string): Promise<void>;
+  setPassResetToken(userId: string, token: string, expire: Date): Promise<void>;
+  setPassHash(userId: string, passHash: string): Promise<void>;
+  removePassResetToken(userId: string): Promise<void>;
 }
+
+export const USER_REPOSITORY = Symbol('USER_REPOSITORY');

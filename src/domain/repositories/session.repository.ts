@@ -1,12 +1,14 @@
 import { Session } from '../models';
 
-export abstract class SessionRepository {
-  abstract getSession(sessionId: string, userId: string): Promise<Session>;
-  abstract createSession(userId: string, expiredDate: Date): Promise<Session>;
-  abstract deleteSession(sessionId: string): Promise<void>;
+export interface SessionRepository {
+  getSession(sessionId: string, userId: string): Promise<Session>;
+  createSession(userId: string, expiredDate: Date): Promise<Session>;
+  deleteSession(sessionId: string): Promise<void>;
 
-  abstract deleteAllUserSessions(
+  deleteAllUserSessions(
     userId: string,
     exceptionSessionId?: string,
   ): Promise<void>;
 }
+
+export const SESSION_REPOSITORY = Symbol('SESSION_REPOSITORY');

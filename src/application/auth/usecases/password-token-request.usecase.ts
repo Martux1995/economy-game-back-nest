@@ -1,9 +1,8 @@
 import { add } from 'date-fns';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 
 import { User } from '../../../domain/models';
 import { EFileType } from '../../../domain/enums';
-import { UserRepository } from '../../../domain/repositories';
 import {
   EnvService,
   TokenService,
@@ -23,9 +22,13 @@ import {
   UserNotFoundException,
 } from '../exceptions';
 
+import { USER_REPOSITORY, UserRepository } from '../../../domain/repositories';
+
+
 @Injectable()
 export class PasswordTokenRequestUseCase {
   constructor(
+    @Inject(USER_REPOSITORY)
     private readonly userRepository: UserRepository,
     private readonly envService: EnvService,
     private readonly tokenService: TokenService,

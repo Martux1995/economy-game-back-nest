@@ -8,11 +8,11 @@ import * as ENTITIES from './entities';
 
 import { SessionRepository, UserRepository } from '../../domain/repositories';
 import { SessionRepositoryImp, UserRepositoryImp } from './repositories';
-import { EnvService } from '../../domain/services';
+import { SESSION_REPOSITORY, USER_REPOSITORY } from '../../domain/repositories';
 
 const REPOSITORIES: Provider[] = [
-  { provide: UserRepository, useClass: UserRepositoryImp },
-  { provide: SessionRepository, useClass: SessionRepositoryImp },
+  { provide: USER_REPOSITORY, useClass: UserRepositoryImp },
+  { provide: SESSION_REPOSITORY, useClass: SessionRepositoryImp },
 ];
 
 @Module({
