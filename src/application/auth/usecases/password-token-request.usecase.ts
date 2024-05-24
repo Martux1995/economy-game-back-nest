@@ -2,7 +2,7 @@ import { add } from 'date-fns';
 import { Inject, Injectable } from '@nestjs/common';
 
 import { User } from '../../../domain/models';
-import { TokenService } from '../../../domain/services';
+import { TOKEN_SERVICE, TokenService } from '../../../domain/services';
 
 import { generateRandomUUID } from '../../common/helpers/uuid';
 
@@ -21,7 +21,8 @@ export class PasswordTokenRequestUseCase {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepository: UserRepository,
-    
+
+    @Inject(TOKEN_SERVICE)
     private readonly tokenService: TokenService,
     private readonly emailService: EmailService,
   ) {}
@@ -41,8 +42,8 @@ export class PasswordTokenRequestUseCase {
     const token = this._generateToken(user.userId, passCode);
 
     await this.emailService.sendRecoverPasswordMail(toMailAddress, {
-          playerName: `${user.firstName} ${user.lastName}`,
-          timeToExpire: '10 minutos',
+      playerName: `${user.firstName} ${user.lastName}`,
+      timeToExpire: '10 minutos',
       token,
     });
   }

@@ -1,6 +1,10 @@
+import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+
+import { AppConfig } from '../../../config/interfaces/app-config';
+import { EEnvironmentVars } from '../../../config/enums/environment-vars.enum';
 
 import { Session } from '../../../domain/models';
 import { EUserRoles } from '../../../domain/enums';
@@ -15,10 +19,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     @Inject(SESSION_REPOSITORY)
     private readonly sessionRepository: SessionRepository,
-    configService: EnvService,
+    configService: ConfigService<AppConfig>,
   ) {
     super({
-      secretOrKey: configService.getJwtSecret(),
+      secretOrKey: configService.get(EEnvironmentVars.JWT_SECRET),
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     });
   }

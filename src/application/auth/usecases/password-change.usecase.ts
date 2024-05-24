@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { User } from '../../../domain/models';
-import { TokenService } from '../../../domain/services';
+import { TOKEN_SERVICE, TokenService } from '../../../domain/services';
 import { USER_REPOSITORY, UserRepository } from '../../../domain/repositories';
 
 import { hashPassword } from '../../common/helpers/password';
@@ -18,6 +18,7 @@ export class PasswordChangeUseCase {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepository: UserRepository,
+    @Inject(TOKEN_SERVICE)
     private readonly tokenService: TokenService,
   ) {}
 

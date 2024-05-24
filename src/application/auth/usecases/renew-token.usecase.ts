@@ -1,6 +1,6 @@
 import { add } from 'date-fns';
 import { Inject, Injectable } from '@nestjs/common';
-import { TokenService } from '../../../domain/services';
+import { TokenService, TOKEN_SERVICE } from '../../../domain/services';
 
 import {
   SessionRepository,
@@ -15,6 +15,7 @@ import {
 @Injectable()
 export class RenewTokenUseCase {
   constructor(
+    @Inject(TOKEN_SERVICE)
     private readonly tokenService: TokenService,
     @Inject(SESSION_REPOSITORY)
     private readonly sessionRepository: SessionRepository,

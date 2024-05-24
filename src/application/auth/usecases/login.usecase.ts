@@ -2,7 +2,7 @@ import { add } from 'date-fns';
 import { Inject, Injectable } from '@nestjs/common';
 
 import { User } from '../../../domain/models';
-import { TokenService } from '../../../domain/services';
+import { TOKEN_SERVICE, TokenService } from '../../../domain/services';
 import {
   SESSION_REPOSITORY,
   SessionRepository,
@@ -22,7 +22,7 @@ export class LoginUseCase {
     @Inject(USER_REPOSITORY) private readonly userRepository: UserRepository,
     @Inject(SESSION_REPOSITORY)
     private readonly sessionRepository: SessionRepository,
-    private readonly tokenService: TokenService,
+    @Inject(TOKEN_SERVICE) private readonly tokenService: TokenService,
   ) {}
 
   async login(params: LoginParams) {

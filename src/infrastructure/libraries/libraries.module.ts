@@ -1,28 +1,20 @@
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule } from '@nestjs/config';
 import { Module, Provider } from '@nestjs/common';
 
-import {
-  EnvService,
-  TokenService,
-} from '../../domain/services';
+import { TOKEN_SERVICE } from '../../domain/services';
+import { AppConfigModule } from '../../config/app-config.module';
 
 import { TokenServiceImp } from './token.service';
-import { EnvServiceImp } from './env.service';
 
 const EXTERNAL_LIBRARIES: Provider[] = [
   {
-    provide: TokenService,
+    provide: TOKEN_SERVICE,
     useClass: TokenServiceImp,
-  },
-  {
-    provide: EnvService,
-    useClass: EnvServiceImp,
   },
 ];
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), JwtModule],
+  imports: [AppConfigModule, JwtModule],
   providers: [...EXTERNAL_LIBRARIES],
   exports: [...EXTERNAL_LIBRARIES],
 })

@@ -1,29 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 import { TokenData } from '../../domain/types';
-import { EnvService, TokenService } from '../../domain/services';
+import { TokenService } from '../../domain/services';
+
+import { AppConfig } from '../../config/interfaces/app-config';
+import { EEnvironmentVars } from '../../config/enums/environment-vars.enum';
 
 @Injectable()
-export class TokenServiceImp extends TokenService {
+export class TokenServiceImp implements TokenService {
+  TOKEN_EXPIRE = 30 * 60;
+
   constructor(
-    private readonly envConfigService: EnvService,
+    private readonly envConfigService: ConfigService<AppConfig>,
     private jwtService: JwtService,
-  ) {
-    super();
-  }
+  ) {}
 
   sign(payload: TokenData): string {
     return this.jwtService.sign(payload, {
-      secret: this.envConfigService.getJwtSecret(),
-      expiresIn: TokenService.TOKEN_EXPIRE,
+      secret: this.envConfigService.get(EEnvironmentVars.JWT_SECRET),
+      expiresIn: this.TOKEN_EXPIRE,
     });
   }
 
   verify(token: string): TokenData | null {
     try {
       return this.jwtService.verify<TokenData>(token, {
-        secret: this.envConfigService.getJwtSecret(),
+        secret: this.envConfigService.get(EEnvironmentVars.JWT_SECRET),
       });
     } catch (e) {
       return null;

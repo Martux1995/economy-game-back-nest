@@ -1,6 +1,5 @@
 import { add } from 'date-fns';
 import { User } from '../../../../domain/models';
-import { SendMailParams } from '../../../../domain/types';
 
 const validUser: User = {
   userId: 'id01',
@@ -47,27 +46,27 @@ const userDisabled: User = {
   session: [],
 };
 
-const sendMailMock = (
-  user: User,
-  html: string,
-  domain: string,
-  token: string,
-): SendMailParams => ({
-  to: user.email,
-  subject: 'Reinicio de clave',
-  content: {
-    html,
-    params: {
-      playerName: `${user.firstName} ${user.lastName}`,
-      timeToExpire: '10 minutos',
-      recoverUrl: `${domain}recover-password?token=${token}`,
-    },
-  },
-});
+// const sendMailMock = (
+//   user: User,
+//   html: string,
+//   domain: string,
+//   token: string,
+// ): SendMailParams => ({
+//   to: user.email,
+//   subject: 'Reinicio de clave',
+//   content: {
+//     html,
+//     params: {
+//       playerName: `${user.firstName} ${user.lastName}`,
+//       timeToExpire: '10 minutos',
+//       recoverUrl: `${domain}recover-password?token=${token}`,
+//     },
+//   },
+// });
 
 export const passwordRequestTokenMock = {
   email: 'testing@mail-economy.com',
-  sendMailMock,
+  //sendMailMock,
   validUser,
   userWithToken,
   userDisabled,
