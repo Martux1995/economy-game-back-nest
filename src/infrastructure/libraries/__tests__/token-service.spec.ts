@@ -3,9 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 
 import { TokenServiceImp } from '../token.service';
-import { tokenServiceMock } from './token-service.mock';
-
-import { EnvService } from '../../../domain/services';
+import { CONFIG_SERVICE_MOCK, tokenServiceMock } from './token-service.mock';
 
 describe('EnvServiceImp', () => {
   let tokenService: TokenServiceImp;
@@ -16,10 +14,10 @@ describe('EnvServiceImp', () => {
       providers: [
         TokenServiceImp,
         {
-          provide: EnvService,
-          useFactory: () => ({
-            getJwtSecret: jest.fn(),
-          }),
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn(CONFIG_SERVICE_MOCK),
+          },
         },
         ConfigService,
         JwtService,

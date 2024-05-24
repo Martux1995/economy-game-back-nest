@@ -1,9 +1,11 @@
 import { Test } from '@nestjs/testing';
 
-import { TokenService } from '../../../../domain/services';
+import { TOKEN_SERVICE, TokenService } from '../../../../domain/services';
 import {
   UserRepository,
   SessionRepository,
+  USER_REPOSITORY,
+  SESSION_REPOSITORY,
 } from '../../../../domain/repositories';
 
 import * as runHelpers from '../../../common/helpers/run';
@@ -24,27 +26,27 @@ describe('LoginUseCase', () => {
       providers: [
         LoginUseCase,
         {
-          provide: UserRepository,
+          provide: USER_REPOSITORY,
           useFactory: () => ({
             removePassResetToken: jest.fn(),
             getUser: jest.fn(),
           }),
         },
         {
-          provide: SessionRepository,
+          provide: SESSION_REPOSITORY,
           useFactory: () => ({ createSession: jest.fn() }),
         },
         {
-          provide: TokenService,
+          provide: TOKEN_SERVICE,
           useFactory: () => ({ sign: jest.fn() }),
         },
       ],
     }).compile();
 
     useCase = module.get<LoginUseCase>(LoginUseCase);
-    userRepo = module.get<UserRepository>(UserRepository);
-    sessionRepo = module.get<SessionRepository>(SessionRepository);
-    tokenService = module.get<TokenService>(TokenService);
+    userRepo = module.get<UserRepository>(USER_REPOSITORY);
+    sessionRepo = module.get<SessionRepository>(SESSION_REPOSITORY);
+    tokenService = module.get<TokenService>(TOKEN_SERVICE);
 
     jest.spyOn(tokenService, 'sign').mockReturnValue('random-token');
   });

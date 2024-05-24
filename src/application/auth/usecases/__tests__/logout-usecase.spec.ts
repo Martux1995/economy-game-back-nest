@@ -1,6 +1,9 @@
 import { Test } from '@nestjs/testing';
 import { LogoutUseCase } from '../logout.usecase';
-import { SessionRepository } from '../../../../domain/repositories';
+import {
+  SESSION_REPOSITORY,
+  SessionRepository,
+} from '../../../../domain/repositories';
 import { logoutUseCaseMock } from './logout-usecase.mock';
 
 describe('LogoutUseCase', () => {
@@ -11,7 +14,7 @@ describe('LogoutUseCase', () => {
       providers: [
         LogoutUseCase,
         {
-          provide: SessionRepository,
+          provide: SESSION_REPOSITORY,
           useFactory: () => ({
             deleteSession: jest.fn(),
           }),
@@ -20,7 +23,7 @@ describe('LogoutUseCase', () => {
     }).compile();
 
     useCase = module.get<LogoutUseCase>(LogoutUseCase);
-    repo = module.get<SessionRepository>(SessionRepository);
+    repo = module.get<SessionRepository>(SESSION_REPOSITORY);
   });
 
   beforeAll(() => {

@@ -2,6 +2,20 @@ import { add } from 'date-fns';
 import { Session } from '../../../domain/models';
 import { UserSessionData } from '../../../domain/types';
 import { EUserRoles } from '../../../domain/enums';
+import { AppConfig } from '../../../config/interfaces/app-config';
+import { EEnvironmentVars } from '../../../config/enums/environment-vars.enum';
+
+const CONFIG_SERVICE_MOCK = (key: EEnvironmentVars) => {
+  const foo: Partial<AppConfig> = {
+    JWT_SECRET: 'ASDASD123',
+  };
+
+  const value = foo[key];
+  if (!value) {
+    throw Error();
+  }
+  return value;
+};
 
 const params = {
   key: 'asdas',
@@ -85,6 +99,7 @@ const disabledSessionData: Session = {
 };
 
 export const JWT_STRATEGY_MOCK = {
+  CONFIG_SERVICE_MOCK,
   params,
   adminSessionData,
   expectedAdmin,
