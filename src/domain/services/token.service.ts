@@ -1,8 +1,10 @@
 import { TokenData } from '../types';
 
-export abstract class TokenService {
-  static TOKEN_EXPIRE = 30 * 60;
+export interface TokenService {
+  TOKEN_EXPIRE: number;
 
-  abstract sign(payload: TokenData): string;
-  abstract verify(token: string): TokenData | null;
+  sign(payload: TokenData): string;
+  verify(token: string): TokenData | null;
 }
+
+export const TOKEN_SERVICE = Symbol('TOKEN_SERVICE');

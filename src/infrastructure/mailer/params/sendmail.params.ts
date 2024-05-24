@@ -3,16 +3,16 @@ export type SendMailAttachParam = {
   content: string | Buffer;
 };
 
-export type SendMailHTMLContent<T> = {
-  html: string;
-  params: T;
+export type SendMailHTMLContent = {
+  html?: string;
+  text?: string;
 };
 
-export type SendMailParams<T = object> = {
+export type SendMailParams = {
   to: string | string[];
   cc?: string | string[];
   bcc?: string | string[];
   subject: string;
-  content: SendMailHTMLContent<T> | string;
+  content: SendMailHTMLContent;
   attachments?: SendMailAttachParam[];
 };

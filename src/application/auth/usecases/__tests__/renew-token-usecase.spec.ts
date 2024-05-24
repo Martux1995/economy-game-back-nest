@@ -1,6 +1,9 @@
 import { Test } from '@nestjs/testing';
-import { SessionRepository } from '../../../../domain/repositories';
-import { TokenService } from '../../../../domain/services';
+import {
+  SESSION_REPOSITORY,
+  SessionRepository,
+} from '../../../../domain/repositories';
+import { TOKEN_SERVICE, TokenService } from '../../../../domain/services';
 
 import { RenewTokenUseCase } from '../renew-token.usecase';
 import { renewTokenUseCaseMock } from './renew-token-usecase.mock';
@@ -14,7 +17,7 @@ describe('RenewTokenUseCase', () => {
       providers: [
         RenewTokenUseCase,
         {
-          provide: SessionRepository,
+          provide: SESSION_REPOSITORY,
           useFactory: () => ({
             deleteSession: jest.fn(),
             getSession: jest.fn(),
@@ -22,7 +25,7 @@ describe('RenewTokenUseCase', () => {
           }),
         },
         {
-          provide: TokenService,
+          provide: TOKEN_SERVICE,
           useFactory: () => ({
             sign: jest.fn(),
           }),
@@ -31,8 +34,8 @@ describe('RenewTokenUseCase', () => {
     }).compile();
 
     useCase = module.get<RenewTokenUseCase>(RenewTokenUseCase);
-    repo = module.get<SessionRepository>(SessionRepository);
-    tokenService = module.get<TokenService>(TokenService);
+    repo = module.get<SessionRepository>(SESSION_REPOSITORY);
+    tokenService = module.get<TokenService>(TOKEN_SERVICE);
   });
 
   beforeAll(() => {

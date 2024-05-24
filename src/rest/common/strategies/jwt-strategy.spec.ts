@@ -1,8 +1,12 @@
 import { Test } from '@nestjs/testing';
-import { JwtStrategy } from './jwt.strategy';
-import { SessionRepository } from '../../../domain/repositories';
-import { EnvService } from '../../../domain/services';
+import { ConfigService } from '@nestjs/config';
 
+import {
+  SESSION_REPOSITORY,
+  SessionRepository,
+} from '../../../domain/repositories';
+
+import { JwtStrategy } from './jwt.strategy';
 import { JWT_STRATEGY_MOCK } from './jwt-strategy.mock';
 
 describe('JWTStrategy', () => {
@@ -14,18 +18,20 @@ describe('JWTStrategy', () => {
       providers: [
         JwtStrategy,
         {
-          provide: SessionRepository,
+          provide: SESSION_REPOSITORY,
           useValue: { getSession: jest.fn() },
         },
         {
-          provide: EnvService,
-          useValue: { getJwtSecret: jest.fn(() => 'token') },
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn(JWT_STRATEGY_MOCK.CONFIG_SERVICE_MOCK),
+          },
         },
       ],
     }).compile();
 
     strategy = module.get<JwtStrategy>(JwtStrategy);
-    sessionRepository = module.get<SessionRepository>(SessionRepository);
+    sessionRepository = module.get<SessionRepository>(SESSION_REPOSITORY);
   });
 
   afterEach(() => {

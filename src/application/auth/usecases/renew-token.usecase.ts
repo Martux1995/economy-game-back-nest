@@ -1,8 +1,11 @@
 import { add } from 'date-fns';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { TokenService, TOKEN_SERVICE } from '../../../domain/services';
 
-import { TokenService } from '../../../domain/services';
-import { SessionRepository } from '../../../domain/repositories';
+import {
+  SessionRepository,
+  SESSION_REPOSITORY,
+} from '../../../domain/repositories';
 
 import {
   SessionExpiredException,
@@ -12,7 +15,9 @@ import {
 @Injectable()
 export class RenewTokenUseCase {
   constructor(
+    @Inject(TOKEN_SERVICE)
     private readonly tokenService: TokenService,
+    @Inject(SESSION_REPOSITORY)
     private readonly sessionRepository: SessionRepository,
   ) {}
 

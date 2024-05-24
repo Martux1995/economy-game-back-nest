@@ -8,13 +8,11 @@ import { GetUserParams } from '../../../domain/repositories/params';
 import { UserEntity } from '../entities';
 
 @Injectable()
-export class UserRepositoryImp extends UserRepository {
+export class UserRepositoryImp implements UserRepository {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-  ) {
-    super();
-  }
+  ) {}
 
   async getUser(params: GetUserParams): Promise<UserEntity> {
     return this.userRepository.findOne({

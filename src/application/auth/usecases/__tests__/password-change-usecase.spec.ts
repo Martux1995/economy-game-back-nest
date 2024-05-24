@@ -1,7 +1,10 @@
 import { Test } from '@nestjs/testing';
 
-import { UserRepository } from '../../../../domain/repositories';
-import { TokenService } from '../../../../domain/services';
+import {
+  USER_REPOSITORY,
+  UserRepository,
+} from '../../../../domain/repositories';
+import { TOKEN_SERVICE, TokenService } from '../../../../domain/services';
 
 import * as passwordHelpers from '../../../common/helpers/password';
 
@@ -24,7 +27,7 @@ describe('PasswordChangeUseCase', () => {
       providers: [
         PasswordChangeUseCase,
         {
-          provide: UserRepository,
+          provide: USER_REPOSITORY,
           useFactory: () => ({
             setPassHash: jest.fn(),
             removePassResetToken: jest.fn(),
@@ -32,7 +35,7 @@ describe('PasswordChangeUseCase', () => {
           }),
         },
         {
-          provide: TokenService,
+          provide: TOKEN_SERVICE,
           useFactory: () => ({
             verify: jest.fn(),
           }),
@@ -41,8 +44,8 @@ describe('PasswordChangeUseCase', () => {
     }).compile();
 
     useCase = module.get<PasswordChangeUseCase>(PasswordChangeUseCase);
-    userRepo = module.get<UserRepository>(UserRepository);
-    tokenService = module.get<TokenService>(TokenService);
+    userRepo = module.get<UserRepository>(USER_REPOSITORY);
+    tokenService = module.get<TokenService>(TOKEN_SERVICE);
   });
 
   beforeAll(() => {
