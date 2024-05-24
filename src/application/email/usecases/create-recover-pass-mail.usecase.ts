@@ -7,10 +7,11 @@ import { TEMPLATE_DIR } from '../constants/template-dir';
 import { EMailTemplate } from '../enums/mail-template.enum';
 
 import { SendMailParams } from '../../../infrastructure/mailer/params/sendmail.params';
+import { RecoverPassMailParams } from '../params';
 
 @Injectable()
 export class CreateRecoverPassMailUseCase {
-  generate(to: string, params: any): SendMailParams {
+  generate(params: RecoverPassMailParams): SendMailParams {
     const templatePath = join(TEMPLATE_DIR, EMailTemplate.RecoverPassword);
 
     const template = readFileSync(templatePath, { encoding: 'utf-8' });
@@ -20,7 +21,7 @@ export class CreateRecoverPassMailUseCase {
     });
 
     return {
-      to,
+      to: params.toAddress,
       subject: 'Reinicio de clave',
       content: { html },
     };

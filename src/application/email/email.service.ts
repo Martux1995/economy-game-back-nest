@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { MailerService } from '../../infrastructure/mailer/mailer.service';
 
 import { CreateRecoverPassMailUseCase } from './usecases';
+import { RecoverPassMailParams } from './params';
 
 @Injectable()
 export class EmailService {
@@ -11,8 +12,8 @@ export class EmailService {
     private readonly createRecoverPassEmailUseCase: CreateRecoverPassMailUseCase,
   ) {}
 
-  async sendRecoverPasswordMail(to: string, params: any) {
-    const mail = this.createRecoverPassEmailUseCase.generate(to, params);
+  async sendRecoverPasswordMail(params: RecoverPassMailParams) {
+    const mail = this.createRecoverPassEmailUseCase.generate(params);
 
     await this.mailerService.sendmail(mail);
   }

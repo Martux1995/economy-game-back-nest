@@ -27,8 +27,8 @@ export class PasswordTokenRequestUseCase {
     private readonly emailService: EmailService,
   ) {}
 
-  async getToken(toMailAddress: string): Promise<void> {
-    const user = await this._checkUserAndReturnUserId(toMailAddress);
+  async getToken(toAddress: string): Promise<void> {
+    const user = await this._checkUserAndReturnUserId(toAddress);
 
     const passCode = generateRandomUUID();
     const expireDate = add(new Date(), { minutes: 10 });
@@ -41,7 +41,8 @@ export class PasswordTokenRequestUseCase {
 
     const token = this._generateToken(user.userId, passCode);
 
-    await this.emailService.sendRecoverPasswordMail(toMailAddress, {
+    await this.emailService.sendRecoverPasswordMail({
+      toAddress,
       playerName: `${user.firstName} ${user.lastName}`,
       timeToExpire: '10 minutos',
       token,
