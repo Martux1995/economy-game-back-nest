@@ -2,17 +2,7 @@ import { add } from 'date-fns';
 import { Inject, Injectable } from '@nestjs/common';
 
 import { User } from '../../../domain/models';
-import { EFileType } from '../../../domain/enums';
-import {
-  EnvService,
-  TokenService,
-  EmailService,
-  FileSystemService,
-} from '../../../domain/services';
-import {
-  RecoverPasswordHTMLTemplate,
-  SendMailParams,
-} from '../../../domain/types';
+import { TokenService } from '../../../domain/services';
 
 import { generateRandomUUID } from '../../common/helpers/uuid';
 
@@ -24,20 +14,20 @@ import {
 
 import { USER_REPOSITORY, UserRepository } from '../../../domain/repositories';
 
+import { EmailService } from '../../../application/email/email.service';
 
 @Injectable()
 export class PasswordTokenRequestUseCase {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepository: UserRepository,
-    private readonly envService: EnvService,
+    
     private readonly tokenService: TokenService,
     private readonly emailService: EmailService,
-    private readonly fileSystemService: FileSystemService,
   ) {}
 
-  async getToken(email: string): Promise<void> {
-    const user = await this._checkUserAndReturnUserId(email);
+  async getToken(toMailAddress: string): Promise<void> {
+    const user = await this._checkUserAndReturnUserId(toMailAddress);
 
     const passCode = generateRandomUUID();
     const expireDate = add(new Date(), { minutes: 10 });
@@ -50,23 +40,11 @@ export class PasswordTokenRequestUseCase {
 
     const token = this._generateToken(user.userId, passCode);
 
-    const emailData: SendMailParams<RecoverPasswordHTMLTemplate> = {
-      to: email,
-      subject: 'Reinicio de clave',
-      content: {
-        html: this.fileSystemService.getTextFile(
-          'recover-password.html',
-          EFileType.EmailTemplate,
-        ),
-        params: {
+    await this.emailService.sendRecoverPasswordMail(toMailAddress, {
           playerName: `${user.firstName} ${user.lastName}`,
           timeToExpire: '10 minutos',
-          recoverUrl: `${this.envService.getFrontDomain()}recover-password?token=${token}`,
-        },
-      },
-    };
-
-    await this.emailService.sendmail(emailData);
+      token,
+    });
   }
 
   private async _checkUserAndReturnUserId(email: string): Promise<User> {
