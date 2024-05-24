@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { LibrariesModule } from './libraries/libraries.module';
+import { MailerModule } from './mailer/mailer.module';
 import { DatabaseModule } from './database/database.module';
-import { EmailModule } from './email/email.module';
+import { LibrariesModule } from './libraries/libraries.module';
 
 @Module({
-  imports: [DatabaseModule, EmailModule, LibrariesModule],
-  exports: [DatabaseModule, EmailModule, LibrariesModule],
+  imports: [DatabaseModule, MailerModule, LibrariesModule],
+  exports: [DatabaseModule, MailerModule, LibrariesModule],
 })
 export class InfrastructureModule {}
